@@ -120,7 +120,7 @@ function handleKeyboardNavigation(e) {
     // ESC key to logout
     if (e.key === 'Escape' && currentUser) {
         if (confirm('Vai tiešām vēlaties izlogoties?')) {
-            logout();
+            window.location.href = 'logout.php';
         }
     }
     

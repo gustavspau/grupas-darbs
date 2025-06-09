@@ -11,17 +11,19 @@ $error_message = '';
 
 // Handle login form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username']);
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
     
-    if (empty($username) || empty($password)) {
-        $error_message = 'Lūdzu ievadiet lietotājvārdu un paroli.';
+    if (empty($email) || empty($password)) {
+        $error_message = 'Lūdzu ievadiet e-pastu un paroli.';
+    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_message = 'Lūdzu ievadiet derīgu e-pasta adresi.';
     } else {
-        if (login($username, $password)) {
+        if (login($email, $password)) {
             header("Location: index.php");
             exit();
         } else {
-            $error_message = 'Nepareizs lietotājvārds vai parole.';
+            $error_message = 'Nepareizs e-pasts vai parole.';
         }
     }
 }
@@ -177,11 +179,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" action="">
             <div class="form-group">
-                <label for="username">Lietotājvārds</label>
+                <label for="email">E-pasts</label>
                 <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="username" name="username" required 
-                           value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" required 
+                           value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                 </div>
             </div>
 
