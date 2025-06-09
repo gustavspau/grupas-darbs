@@ -1,9 +1,8 @@
-// Global variables
-let currentUser = null;
-let currentRole = null;
+// Global variables (set from PHP)
+let currentUser = userName;
+let currentRole = userRole;
 
 // DOM Elements
-const loginForm = document.getElementById('loginForm');
 const screens = document.querySelectorAll('.screen');
 
 // Initialize the application
@@ -12,43 +11,22 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
-    // Add login form event listener
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
+    // Show appropriate dashboard based on PHP session
+    showDashboard(currentRole);
+    
+    // Update user display
+    updateUserDisplay(currentUser, currentRole);
     
     // Add keyboard navigation
     document.addEventListener('keydown', handleKeyboardNavigation);
     
-    // Check for existing session
-    checkExistingSession();
+    // Initialize specific features
+    initializeShelfMap();
+    initializeWarehouseOperations();
+    startRealTimeUpdates();
 }
 
-function handleLogin(e) {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-    
-    // Simple validation (in real app, this would be server-side)
-    if (username && password && role) {
-        currentUser = username;
-        currentRole = role;
-        
-        // Store session
-        sessionStorage.setItem('currentUser', username);
-        sessionStorage.setItem('currentRole', role);
-        
-        // Show appropriate dashboard
-        showDashboard(role);
-        
-        // Update user display
-        updateUserDisplay(username, role);
-    } else {
-        alert('Lūdzu aizpildiet visus laukus');
-    }
-}
+// Login is now handled by PHP - this function is not needed
 
 function showDashboard(role) {
     // Hide all screens
@@ -65,6 +43,9 @@ function showDashboard(role) {
         case 'shelf':
             document.getElementById('shelf-screen').classList.add('active');
             break;
+        default:
+            // Fallback to admin if role not recognized
+            document.getElementById('admin-screen').classList.add('active');
     }
 }
 
@@ -77,34 +58,7 @@ function updateUserDisplay(username, role) {
     });
 }
 
-function logout() {
-    // Clear session
-    sessionStorage.removeItem('currentUser');
-    sessionStorage.removeItem('currentRole');
-    
-    // Reset form
-    loginForm.reset();
-    
-    // Show login screen
-    screens.forEach(screen => screen.classList.remove('active'));
-    document.getElementById('login-screen').classList.add('active');
-    
-    // Reset variables
-    currentUser = null;
-    currentRole = null;
-}
-
-function checkExistingSession() {
-    const storedUser = sessionStorage.getItem('currentUser');
-    const storedRole = sessionStorage.getItem('currentRole');
-    
-    if (storedUser && storedRole) {
-        currentUser = storedUser;
-        currentRole = storedRole;
-        showDashboard(storedRole);
-        updateUserDisplay(storedUser, storedRole);
-    }
-}
+// Logout is now handled by PHP - redirect to logout.php
 
 // Admin Dashboard Functions
 function showAdminSection(sectionName) {
