@@ -298,4 +298,73 @@ window.showAdminSection = showAdminSection;
 window.showWarehouseSection = showWarehouseSection;
 window.showShelfSection = showShelfSection;
 window.logout = logout;
-window.confirmReceive = confirmReceive; 
+window.confirmReceive = confirmReceive;
+
+// Settings functions
+function loadSettings() {
+    fetch('settings.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=get_settings'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Apply settings to form elements
+            if (data.settings.theme) {
+                document.getElementById('theme').value = data.settings.theme;
+                applyTheme(data.settings.theme);
+            }
+            if (data.settings.items_per_page) {
+                document.getElementById('itemsPerPage').value = data.settings.items_per_page;
+            }
+            if (data.settings.email_notifications) {
+                document.getElementById('emailNotifications').checked = data.settings.email_notifications === '1';
+            }
+            if (data.settings.low_stock_alert) {
+                document.getElementById('lowStockAlert').checked = data.settings.low_stock_alert === '1';
+            }
+        }
+    })
+    .catch(error => console.error('Error loading settings:', error));
+}
+
+function updateSetting(key, value) {
+    fetch('settings.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=update_setting&key=${key}&value=${value}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (key === 'theme') {
+                applyTheme(value);
+            }
+            showNotification('Iestatījumi saglabāti', 'success');
+        } else {
+            showNotification('Kļūda saglabājot iestatījumus', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating setting:', error);
+        showNotification('Kļūda saglabājot iestatījumus', 'error');
+    });
+}
+
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+    } else {
+        document.body.classList.remove('dark-theme');
+    }
+}
+
+// Load settings when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadSettings();
+}); 

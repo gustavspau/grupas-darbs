@@ -95,6 +95,20 @@ CREATE TABLE tasks (
 );
 
 -- ========================================
+-- 7. Iestatījumu TABULA (Settings Table)
+-- ========================================
+CREATE TABLE IF NOT EXISTS settings (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    setting_key VARCHAR(50) NOT NULL,
+    setting_value TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_setting (user_id, setting_key)
+);
+
+-- ========================================
 -- DATABASE READY!
 -- Datubāze ir gatava!
 -- ======================================== 

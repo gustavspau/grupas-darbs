@@ -331,9 +331,44 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
 
             </div>
 
+            <!-- Admin Settings Section -->
             <div id="admin-settings" class="content-section">
-                <h2>Sistēmas iestatījumi</h2>
-                <p>Šeit tiks attēloti sistēmas iestatījumi...</p>
+                <h2>Iestatījumi</h2>
+                <div class="settings-container">
+                    <div class="setting-group">
+                        <h3>Attēlošanas iestatījumi</h3>
+                        <div class="setting-item">
+                            <label for="theme">Tēma:</label>
+                            <select id="theme" onchange="updateSetting('theme', this.value)">
+                                <option value="light">Gaiša</option>
+                                <option value="dark">Tumša</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="itemsPerPage">Ieraksti lapā:</label>
+                            <select id="itemsPerPage" onchange="updateSetting('items_per_page', this.value)">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Paziņojumu iestatījumi</h3>
+                        <div class="setting-item">
+                            <label for="emailNotifications">E-pasta paziņojumi:</label>
+                            <input type="checkbox" id="emailNotifications" onchange="updateSetting('email_notifications', this.checked)">
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="lowStockAlert">Zema krājuma brīdinājumi:</label>
+                            <input type="checkbox" id="lowStockAlert" onchange="updateSetting('low_stock_alert', this.checked)">
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
