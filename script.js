@@ -354,6 +354,15 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+// Function to confirm receive action
+function confirmReceive(productCode) {
+    if (confirm('Vai tiešām vēlaties apstiprināt šo produktu saņemšanu?')) {
+        // Handle the confirm receive logic here
+        console.log('Confirming receive for product:', productCode);
+        showNotification('Produkts apstiprināts veiksmīgi!', 'success');
+    }
+}
+
 // Export functions for global use
 window.showAdminSection = showAdminSection;
 window.showWarehouseSection = showWarehouseSection;
@@ -361,61 +370,6 @@ window.showShelfSection = showShelfSection;
 window.confirmReceive = confirmReceive;
 
 // Settings functions
-function loadSettings() {
-    fetch('settings.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'action=get_settings'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Apply settings to form elements
-            if (data.settings.theme) {
-                document.getElementById('theme').value = data.settings.theme;
-                applyTheme(data.settings.theme);
-            }
-            if (data.settings.items_per_page) {
-                document.getElementById('itemsPerPage').value = data.settings.items_per_page;
-            }
-            if (data.settings.email_notifications) {
-                document.getElementById('emailNotifications').checked = data.settings.email_notifications === '1';
-            }
-            if (data.settings.low_stock_alert) {
-                document.getElementById('lowStockAlert').checked = data.settings.low_stock_alert === '1';
-            }
-        }
-    })
-    .catch(error => console.error('Error loading settings:', error));
-}
-
-function updateSetting(key, value) {
-    fetch('settings.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `action=update_setting&key=${key}&value=${value}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (key === 'theme') {
-                applyTheme(value);
-            }
-            showNotification('Iestatījumi saglabāti', 'success');
-        } else {
-            showNotification('Kļūda saglabājot iestatījumus', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error updating setting:', error);
-        showNotification('Kļūda saglabājot iestatījumus', 'error');
-    });
-}
-
 function applyTheme(theme) {
     if (theme === 'dark') {
         document.body.classList.add('dark-theme');
@@ -424,23 +378,15 @@ function applyTheme(theme) {
     }
 }
 
-// Load settings when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    loadSettings();
-});
-
 // User registration validation (Reverted to basic checks)
 function validateUserForm(formData) {
     const errors = {};
     // Minimal validation to ensure fields are not empty if they are required by backend (e.g. for hashing password).
-    if (!formData.get('username')) {
-        errors.username = 'Lietotājvārds nevar būt tukšs.';
+    if (!formData.get('firstName')) {
+        errors.firstName = 'Vārds nevar būt tukšs.';
     }
-    if (!formData.get('first_name')) {
-        errors.first_name = 'Vārds nevar būt tukšs.';
-    }
-    if (!formData.get('last_name')) {
-        errors.last_name = 'Uzvārds nevar būt tukšs.';
+    if (!formData.get('lastName')) {
+        errors.lastName = 'Uzvārds nevar būt tukšs.';
     }
     if (!formData.get('email')) {
         errors.email = 'E-pasts nevar būt tukšs.';
@@ -603,14 +549,9 @@ async function checkUsernameAvailability(username) {
 document.addEventListener('DOMContentLoaded', function() {
     const addUserForm = document.getElementById('addUserForm');
     const emailInput = document.getElementById('email');
-    const usernameInput = document.getElementById('username');
-
-    // Revert email/username input event listeners if they are still present
+    // Revert email input event listeners if they are still present
     if (emailInput) {
         emailInput.removeEventListener('input', debounce(async (e) => {}, 500)); // Remove previous listener
-    }
-    if (usernameInput) {
-        usernameInput.removeEventListener('input', debounce(async (e) => {}, 500)); // Remove previous listener
     }
 
     if (addUserForm) {
@@ -637,9 +578,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const userData = {
-                username: formData.get('username'),
-                first_name: formData.get('firstName'), // Still needs to be firstName from form
-                last_name: formData.get('lastName'),   // Still needs to be lastName from form
+                first_name: formData.get('firstName'),
+                last_name: formData.get('lastName'),
                 email: formData.get('email'),
                 password: formData.get('password'),
                 role: formData.get('role')
