@@ -86,6 +86,11 @@ function showWarehouseSection(sectionName) {
     
     // Update navigation
     updateNavigation('#warehouse-screen', sectionName);
+    
+    // Initialize warehouse receive section if needed
+    if (sectionName === 'receive' && typeof initializeWarehouseReceive === 'function') {
+        initializeWarehouseReceive();
+    }
 }
 
 // Shelf Dashboard Functions
@@ -291,6 +296,14 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.remove();
     }, 3000);
+}
+
+function clearNotifications() {
+    // Remove all existing notifications
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        notification.remove();
+    });
 }
 
 // Export functions for global use

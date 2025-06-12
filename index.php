@@ -19,8 +19,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
     <link rel="stylesheet" href="styles.css?v=3.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="inventory.js"></script>
-    <script src="reports.js"></script>
 </head>
 <body>
     <!-- Set initial screen based on user role -->
@@ -172,30 +170,36 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     <h2>Pievienot jaunu lietotāju</h2>
                     <form id="addUserForm">
                         <div class="form-group">
-                            <label for="firstName">Vārds:</label>
-                            <input type="text" id="firstName" name="firstName" required>
+                            <label for="firstName">Vārds: *</label>
+                            <input type="text" id="firstName" name="firstName" maxlength="50" placeholder="Ievadiet vārdu">
+                            <div class="error-message" id="firstName-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="lastName">Uzvārds:</label>
-                            <input type="text" id="lastName" name="lastName" required>
+                            <label for="lastName">Uzvārds: *</label>
+                            <input type="text" id="lastName" name="lastName" maxlength="50" placeholder="Ievadiet uzvārdu">
+                            <div class="error-message" id="lastName-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="email">E-pasts:</label>
-                            <input type="email" id="email" name="email" required>
+                            <label for="email">E-pasts: *</label>
+                            <input type="email" id="email" name="email" maxlength="254" placeholder="lietotajs@example.com">
+                            <div class="error-message" id="email-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="password">Parole:</label>
-                            <input type="password" id="password" name="password" required>
+                            <label for="password">Parole: *</label>
+                            <input type="password" id="password" name="password" maxlength="128" placeholder="Vismaz 8 simboli ar lielajiem/mazajiem burtiem, cipariem un speciālajiem simboliem">
+                            <div class="error-message" id="password-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="role">Loma:</label>
-                            <select id="role" name="role" required>
+                            <label for="role">Loma: *</label>
+                            <select id="role" name="role">
+                                <option value="">-- Izvēlieties lomu --</option>
                                 <option value="admin">Administrators</option>
                                 <option value="warehouse">Noliktavas darbinieks</option>
                                 <option value="shelf">Plauktu kārtotājs</option>
                             </select>
+                            <div class="error-message" id="role-error"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Saglabāt</button>
+                        <button type="submit" class="btn btn-primary" onclick="submitUserForm(event)">Saglabāt</button>
                     </form>
                 </div>
             </div>
@@ -240,18 +244,36 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 <div class="modal-content">
                     <span class="close" onclick="closeModal()">&times;</span>
                     <h2>Pievienot jaunu produktu</h2>
-                    <form id="addProductForm">
+                    <form id="addProductForm" novalidate>
                         <div class="form-group">
-                            <label for="productCode">Produkta kods:</label>
-                            <input type="text" id="productCode" name="productCode" required>
+                            <label for="productCode">Produkta kods: *</label>
+                            <input 
+                                type="text" 
+                                id="productCode" 
+                                name="productCode" 
+                                minlength="6" 
+                                maxlength="6" 
+                                pattern="PRD[0-9]{3}" 
+                                title="Formāts: PRD + 3 cipari (piemēram: PRD001)"
+                                placeholder="PRD001"
+                                style="text-transform: uppercase;">
+                            <div class="error-message" id="productCode-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="productName">Nosaukums:</label>
-                            <input type="text" id="productName" name="productName" required>
+                            <label for="productName">Nosaukums: *</label>
+                            <input 
+                                type="text" 
+                                id="productName" 
+                                name="productName" 
+                                minlength="2" 
+                                maxlength="50" 
+                                placeholder="Produkta nosaukums">
+                            <div class="error-message" id="productName-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="productCategory">Kategorija:</label>
-                            <select id="productCategory" name="productCategory" required>
+                            <label for="productCategory">Kategorija: *</label>
+                            <select id="productCategory" name="productCategory">
+                                <option value="">-- Izvēlieties kategoriju --</option>
                                 <option value="Bulkīšu izstrādājumi">Bulkīšu izstrādājumi</option>
                                 <option value="Šķidrums">Šķidrums</option>
                                 <option value="Piena produkti">Piena produkti</option>
@@ -260,24 +282,55 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                                 <option value="Sausie augļi un rieksti">Sausie augļi un rieksti</option>
                                 <option value="Saldumi">Saldumi</option>
                             </select>
+                            <div class="error-message" id="productCategory-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="barcode">Svītrkods:</label>
-                            <input type="text" id="barcode" name="barcode" required>
+                            <label for="barcode">Svītrkods (EAN-13):</label>
+                            <input 
+                                type="text" 
+                                id="barcode" 
+                                name="barcode" 
+                                pattern="[0-9]{13}" 
+                                title="Tieši 13 cipari (EAN-13 formāts)" 
+                                placeholder="1234567890123"
+                                minlength="13"
+                                maxlength="13">
+                            <div class="error-message" id="barcode-error"></div>
                         </div>
                         <div class="form-group">
                             <label for="description">Apraksts:</label>
-                            <textarea id="description" name="description" required></textarea>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                maxlength="200" 
+                                placeholder="Produkta apraksts (nav obligāts)"
+                                rows="3"></textarea>
+                            <div class="error-message" id="description-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="unitPrice">Vienības cena (€):</label>
-                            <input type="number" id="unitPrice" name="unitPrice" step="0.01" required>
+                            <label for="unitPrice">Vienības cena (€): *</label>
+                            <input 
+                                type="number" 
+                                id="unitPrice" 
+                                name="unitPrice" 
+                                step="0.01" 
+                                min="0" 
+                                max="999999.99" 
+                                placeholder="0.00">
+                            <div class="error-message" id="unitPrice-error"></div>
                         </div>
                         <div class="form-group">
-                            <label for="minStock">Min. krājums:</label>
-                            <input type="number" id="minStock" name="minStock" required>
+                            <label for="minStock">Min. krājums: *</label>
+                            <input 
+                                type="number" 
+                                id="minStock" 
+                                name="minStock" 
+                                min="0" 
+                                max="999999" 
+                                placeholder="0">
+                            <div class="error-message" id="minStock-error"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Saglabāt</button>
+                        <button type="submit" class="btn btn-primary" onclick="submitProductForm(event)">Saglabāt</button>
                     </form>
                 </div>
             </div>
@@ -294,7 +347,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <i class="fas fa-file-pdf"></i> Eksportēt PDF
                         </button>
                     </div>
-                </div>
+            </div>
 
                 <!-- Overview Stats -->
                 <div class="stats-grid reports-stats">
@@ -700,8 +753,8 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <li><i class="fas fa-circle"></i> Pārbaudīt plauktu marķējumu</li>
                             <li><i class="fas fa-circle"></i> Sakārtot preces pēc kategorijām</li>
                         </ul>
-                    </div>
-                    
+            </div>
+
                     <div class="quick-actions">
                         <h3>Ātras darbības:</h3>
                         <div class="action-buttons">
@@ -777,7 +830,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                                     <option value="C3">C3</option>
                                     <option value="C4">C4</option>
                                 </select>
-                            </div>
+            </div>
                             <div class="form-group">
                                 <label>Produktu skaits:</label>
                                 <input type="number" class="form-control" placeholder="Ievadiet produktu skaitu">
@@ -809,8 +862,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         </main>
     </div>
 
-    <script src="script.js"></script>
-    <script src="shelf-organizer.js"></script>
+    <script src="script.js?v=7.0"></script>
+    <script src="inventory.js?v=8.2"></script>
+    <script src="shelf-organizer.js?v=7.0"></script>
     <script>
     function showAdminSection(section) {
         // Hide all sections
@@ -1276,16 +1330,14 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             });
     }
 
-    // Initialize with some products
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize products only when warehouse receive section is shown
+    function initializeWarehouseReceive() {
         const warehouseReceive = document.getElementById('warehouse-receive');
-        if (warehouseReceive) {
-            console.log('Warehouse receive section found, generating products...'); // Debug log
+        if (warehouseReceive && warehouseReceive.classList.contains('active')) {
+            console.log('Warehouse receive section is active, generating products...'); // Debug log
             generateRandomProducts();
-        } else {
-            console.log('Warehouse receive section not found'); // Debug log
         }
-    });
+    }
     
     // Function to edit a product - moved here to ensure global scope
     function editProduct(productId) {
@@ -1338,7 +1390,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                                 <label for="editMinStock">Min. krājums:</label>
                                 <input type="number" id="editMinStock" value="${product.min_stock_level || ''}" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Saglabāt</button>
+                            <button type="submit" class="btn btn-primary" onclick="submitProductForm(event)">Saglabāt</button>
                         </form>
                     </div>
                 `;
@@ -1373,7 +1425,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             alert('Produkts veiksmīgi atjaunināts!');
                             modal.remove();
                             loadProducts(); // Reload the products table
-                        } else {
+        } else {
                             alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
                         }
                     })
@@ -1394,6 +1446,615 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 console.error('Error fetching product:', error);
                 alert('Kļūda ielādējot produkta datus');
             });
+    }
+
+    // Inline form submission functions that will work regardless of other scripts
+    function submitProductForm(event) {
+        if (event) event.preventDefault();
+        
+        console.log('submitProductForm called');
+        
+        // Clear previous error styling
+        clearFieldErrors();
+        
+        const formData = {
+            product_code: document.getElementById('productCode').value.trim(),
+            product_name: document.getElementById('productName').value.trim(),
+            category: document.getElementById('productCategory').value,
+            barcode: document.getElementById('barcode').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            unit_price: document.getElementById('unitPrice').value,
+            min_stock_level: document.getElementById('minStock').value
+        };
+        
+        console.log('Form data being sent:', formData);
+        
+        // Client-side validation
+        const errors = validateFormData(formData);
+        if (errors.length > 0) {
+            console.log('Client-side validation errors:', errors);
+            showValidationErrors(errors);
+            alert('Lūdzu izlabojiet atzīmētos laukus un mēģiniet vēlreiz');
+            return;
+        }
+        
+        const submitButton = event.target;
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Saglabā...';
+        submitButton.disabled = true;
+        
+        fetch('add_product.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.status);
+            }
+            return response.text();
+        })
+        .then(text => {
+            console.log('Raw response:', text);
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                throw new Error('Servera atbilde nav derīgs JSON: ' + text.substring(0, 100));
+            }
+            
+            console.log('Parsed response:', data);
+            if (data.success) {
+                alert('Produkts veiksmīgi pievienots!');
+                document.getElementById('addProductModal').style.display = 'none';
+                document.getElementById('addProductForm').reset();
+                clearFieldErrors();
+                if (typeof loadProducts === 'function') {
+                    loadProducts();
+                }
+            } else if (data.validation_errors && Array.isArray(data.validation_errors)) {
+                showValidationErrors(data.validation_errors);
+                // Show debug info in console
+                if (data.debug_data) {
+                    console.log('Debug data sent to server:', data.debug_data);
+                }
+            } else {
+                alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Kļūda pievienojot produktu: ' + error.message);
+        })
+        .finally(() => {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        });
+    }
+    
+    function validateFormData(data) {
+        const errors = [];
+        
+        // Helper function to check if value is empty
+        const isEmpty = (value) => {
+            return value === null || value === undefined || 
+                   (typeof value === 'string' && value.trim() === '') ||
+                   (typeof value === 'number' && isNaN(value));
+        };
+        
+        // Valid categories list (must match server-side)
+        const validCategories = [
+            'Bulkīšu izstrādājumi', 'Šķidrums', 'Piena produkti', 
+            'Dārzeņi', 'Augļi', 'Sausie augļi un rieksti', 'Saldumi'
+        ];
+        
+        // Product code validation - ALWAYS check regardless of HTML attributes
+        if (isEmpty(data.product_code)) {
+            errors.push({field: 'productCode', message: 'Produkta kods ir obligāts un nedrīkst būt tukšs'});
+        } else {
+            const code = data.product_code.trim();
+            if (code.length !== 6) {
+                errors.push({field: 'productCode', message: 'Produkta kodam jābūt tieši 6 simboliem (PRD + 3 cipari)'});
+            } else if (!/^PRD[0-9]{3}$/.test(code)) {
+                errors.push({field: 'productCode', message: 'Produkta kods drīkst sākties tikai ar PRD + 3 cipari (piemēram: PRD001)'});
+            }
+        }
+        
+        // Product name validation - ALWAYS check
+        if (isEmpty(data.product_name)) {
+            errors.push({field: 'productName', message: 'Produkta nosaukums ir obligāts un nedrīkst būt tukšs'});
+        } else {
+            const name = data.product_name.trim();
+            if (name.length < 2) {
+                errors.push({field: 'productName', message: 'Produkta nosaukumam jābūt vismaz 2 simboliem'});
+            } else if (name.length > 50) {
+                errors.push({field: 'productName', message: 'Produkta nosaukums nedrīkst pārsniegt 50 simbolus'});
+            }
+        }
+        
+        // Category validation - ALWAYS check
+        if (isEmpty(data.category) || data.category === '-- Izvēlieties kategoriju --') {
+            errors.push({field: 'productCategory', message: 'Kategorija ir obligāta - lūdzu izvēlieties kategoriju'});
+        } else if (!validCategories.includes(data.category)) {
+            errors.push({field: 'productCategory', message: 'Izvēlētā kategorija nav derīga'});
+        }
+        
+        // Unit price validation - ALWAYS check
+        if (isEmpty(data.unit_price)) {
+            errors.push({field: 'unitPrice', message: 'Vienības cena ir obligāta un nedrīkst būt tukša'});
+        } else {
+            const price = parseFloat(data.unit_price);
+            if (isNaN(price)) {
+                errors.push({field: 'unitPrice', message: 'Vienības cenai jābūt derīgam skaitlim'});
+            } else if (price < 0) {
+                errors.push({field: 'unitPrice', message: 'Vienības cena nedrīkst būt negatīva'});
+            } else if (price > 999999.99) {
+                errors.push({field: 'unitPrice', message: 'Vienības cena nedrīkst pārsniegt 999999.99 EUR'});
+            }
+        }
+        
+        // Min stock validation - ALWAYS check
+        if (isEmpty(data.min_stock_level)) {
+            errors.push({field: 'minStock', message: 'Minimālais krājums ir obligāts un nedrīkst būt tukšs'});
+        } else {
+            const stock = parseInt(data.min_stock_level);
+            if (isNaN(stock)) {
+                errors.push({field: 'minStock', message: 'Minimālajam krājumam jābūt derīgam skaitlim'});
+            } else if (stock < 0) {
+                errors.push({field: 'minStock', message: 'Minimālais krājums nedrīkst būt negatīvs'});
+            } else if (parseFloat(data.min_stock_level) !== stock) {
+                errors.push({field: 'minStock', message: 'Minimālajam krājumam jābūt veselam skaitlim'});
+            } else if (stock > 999999) {
+                errors.push({field: 'minStock', message: 'Minimālais krājums nedrīkst pārsniegt 999999'});
+            }
+        }
+        
+        // Barcode validation (optional but if provided must be valid)
+        if (data.barcode && data.barcode.trim() !== '') {
+            const barcode = data.barcode.trim();
+            if (!/^[0-9]{13}$/.test(barcode)) {
+                errors.push({field: 'barcode', message: 'Svītrkods drīkst saturēt tikai 13 ciparus (EAN-13 formāts)'});
+            }
+        }
+        
+        // Description validation (optional but if provided must be valid)
+        if (data.description && data.description.trim() !== '') {
+            const desc = data.description.trim();
+            if (desc.length > 200) {
+                errors.push({field: 'description', message: 'Apraksts nedrīkst pārsniegt 200 simbolus'});
+            }
+        }
+        
+        return errors;
+    }
+    
+    function showValidationErrors(errors) {
+        clearFieldErrors();
+        
+        let hasErrors = false;
+        
+        errors.forEach(error => {
+            if (typeof error === 'string') {
+                // General error - show in alert for now
+                console.log('General error:', error);
+            } else if (error.field && error.message) {
+                // Show error under specific field
+                const field = document.getElementById(error.field);
+                const errorDiv = document.getElementById(error.field + '-error');
+                const formGroup = field ? field.closest('.form-group') : null;
+                
+                if (field && errorDiv && formGroup) {
+                    formGroup.classList.add('has-error');
+                    errorDiv.textContent = error.message;
+                    hasErrors = true;
+                }
+            }
+        });
+        
+        if (hasErrors) {
+            // Scroll to first error
+            const firstError = document.querySelector('.form-group.has-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }
+     
+    function clearFieldErrors() {
+        const fields = ['productCode', 'productName', 'productCategory', 'barcode', 'description', 'unitPrice', 'minStock'];
+        fields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            const formGroup = field ? field.closest('.form-group') : null;
+            
+            if (field && formGroup) {
+                formGroup.classList.remove('has-error', 'has-success');
+                field.style.border = '';
+                field.style.backgroundColor = '';
+            }
+            if (errorDiv) {
+                errorDiv.textContent = '';
+            }
+        });
+    }
+     
+    function validateFieldRealTime(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+        const formGroup = field ? field.closest('.form-group') : null;
+        
+        if (!field || !errorDiv || !formGroup) return;
+        
+        const value = field.value.trim();
+        let error = null;
+        
+        switch(fieldId) {
+            case 'productCode':
+                if (!value) {
+                    error = 'Produkta kods ir obligāts';
+                } else if (value.length !== 6) {
+                    error = 'Produkta kodam jābūt tieši 6 simboliem (PRD + 3 cipari)';
+                } else if (!/^PRD[0-9]{3}$/.test(value)) {
+                    error = 'Produkta kods drīkst sākties tikai ar PRD + 3 cipari (piemēram: PRD001)';
+                }
+                break;
+                
+            case 'productName':
+                if (!value) {
+                    error = 'Produkta nosaukums ir obligāts';
+                } else if (value.length < 2 || value.length > 50) {
+                    error = 'Produkta nosaukumam jābūt no 2 līdz 50 simboliem';
+                }
+                break;
+                
+            case 'productCategory':
+                if (!value) {
+                    error = 'Kategorija ir obligāta';
+                }
+                break;
+                
+            case 'barcode':
+                if (value && !/^[0-9]{13}$/.test(value)) {
+                    error = 'Svītrkods drīkst saturēt tikai 13 ciparus (EAN-13 formāts)';
+                }
+                break;
+                
+            case 'description':
+                if (value && value.length > 200) {
+                    error = 'Apraksts nedrīkst pārsniegt 200 simbolus';
+                }
+                break;
+                
+            case 'unitPrice':
+                if (!value) {
+                    error = 'Vienības cena ir obligāta';
+                } else if (isNaN(value) || parseFloat(value) < 0) {
+                    error = 'Vienības cenai jābūt pozitīvam skaitlim';
+                } else if (parseFloat(value) > 999999.99) {
+                    error = 'Vienības cena nedrīkst pārsniegt 999999.99 EUR';
+                }
+                break;
+                
+            case 'minStock':
+                if (!value) {
+                    error = 'Minimālais krājums ir obligāts';
+                } else if (isNaN(value) || parseInt(value) < 0) {
+                    error = 'Minimālajam krājumam jābūt pozitīvam skaitlim';
+                } else if (parseInt(value) > 999999) {
+                    error = 'Minimālais krājums nedrīkst pārsniegt 999999';
+                }
+                break;
+        }
+        
+        if (error) {
+            formGroup.classList.add('has-error');
+            formGroup.classList.remove('has-success');
+            errorDiv.textContent = error;
+        } else if (value || fieldId === 'productCode' || fieldId === 'productName' || fieldId === 'productCategory' || fieldId === 'unitPrice' || fieldId === 'minStock') {
+            formGroup.classList.add('has-success');
+            formGroup.classList.remove('has-error');
+            errorDiv.textContent = '';
+        }
+    }
+     
+    // Add real-time validation to form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const fields = ['productCode', 'productName', 'productCategory', 'barcode', 'description', 'unitPrice', 'minStock'];
+        
+        fields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('blur', () => validateFieldRealTime(fieldId));
+                field.addEventListener('input', () => {
+                    // Clear error immediately when user starts typing
+                    const errorDiv = document.getElementById(fieldId + '-error');
+                    const formGroup = field.closest('.form-group');
+                    if (formGroup && formGroup.classList.contains('has-error')) {
+                        setTimeout(() => validateFieldRealTime(fieldId), 300);
+                    }
+                });
+            }
+        });
+        
+        // Special handling for product code - auto uppercase and PRD prefix
+        const productCodeField = document.getElementById('productCode');
+        if (productCodeField) {
+            productCodeField.addEventListener('input', function(e) {
+                let value = e.target.value.toUpperCase();
+                
+                // If user starts typing numbers, auto-add PRD prefix
+                if (/^[0-9]/.test(value)) {
+                    value = 'PRD' + value;
+                }
+                
+                // Ensure it starts with PRD
+                if (value && !value.startsWith('PRD')) {
+                    // If user types something else, try to fix it
+                    if (/^[A-Z]{1,3}[0-9]*$/.test(value)) {
+                        // Replace first letters with PRD
+                        value = 'PRD' + value.replace(/^[A-Z]+/, '');
+                    }
+                }
+                
+                // Limit to 6 characters total
+                if (value.length > 6) {
+                    value = value.slice(0, 6);
+                }
+                
+                // Ensure PRD + only numbers after
+                if (value.length > 3) {
+                    const prdPart = value.slice(0, 3);
+                    const numberPart = value.slice(3).replace(/[^0-9]/g, '');
+                    value = prdPart + numberPart;
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Auto-focus to end and add PRD if empty on focus
+            productCodeField.addEventListener('focus', function(e) {
+                if (!e.target.value) {
+                    e.target.value = 'PRD';
+                    setTimeout(() => {
+                        e.target.setSelectionRange(3, 3);
+                    }, 0);
+                }
+            });
+        }
+        
+        // Special handling for barcode - only numbers
+        const barcodeField = document.getElementById('barcode');
+        if (barcodeField) {
+            barcodeField.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                if (e.target.value.length > 13) {
+                    e.target.value = e.target.value.slice(0, 13);
+                }
+            });
+        }
+    });
+
+    // Comprehensive user validation function (Gmail-level)
+    function validateUserData(data) {
+        const errors = [];
+        
+        // Helper function to check if value is empty
+        const isEmpty = (value) => {
+            return value === null || value === undefined || 
+                   (typeof value === 'string' && value.trim() === '') ||
+                   (typeof value === 'number' && isNaN(value));
+        };
+        
+        // First name validation
+        if (isEmpty(data.first_name)) {
+            errors.push({field: 'firstName', message: 'Vārds ir obligāts un nedrīkst būt tukšs'});
+        } else {
+            const name = data.first_name.trim();
+            if (name.length < 2) {
+                errors.push({field: 'firstName', message: 'Vārdam jābūt vismaz 2 simboliem'});
+            } else if (name.length > 50) {
+                errors.push({field: 'firstName', message: 'Vārds nedrīkst pārsniegt 50 simbolus'});
+            } else if (!/^[\p{L}\s\-']+$/u.test(name)) {
+                errors.push({field: 'firstName', message: 'Vārdā drīkst būt tikai burti, atstarpes un defises'});
+            } else if (/^\s|\s$/.test(name)) {
+                errors.push({field: 'firstName', message: 'Vārds nedrīkst sākties vai beigties ar atstarpi'});
+            }
+        }
+        
+        // Last name validation
+        if (isEmpty(data.last_name)) {
+            errors.push({field: 'lastName', message: 'Uzvārds ir obligāts un nedrīkst būt tukšs'});
+        } else {
+            const lastName = data.last_name.trim();
+            if (lastName.length < 2) {
+                errors.push({field: 'lastName', message: 'Uzvārdam jābūt vismaz 2 simboliem'});
+            } else if (lastName.length > 50) {
+                errors.push({field: 'lastName', message: 'Uzvārds nedrīkst pārsniegt 50 simbolus'});
+            } else if (!/^[\p{L}\s\-']+$/u.test(lastName)) {
+                errors.push({field: 'lastName', message: 'Uzvārdā drīkst būt tikai burti, atstarpes un defises'});
+            } else if (/^\s|\s$/.test(lastName)) {
+                errors.push({field: 'lastName', message: 'Uzvārds nedrīkst sākties vai beigties ar atstarpi'});
+            }
+        }
+        
+        // Email validation (Gmail-level)
+        if (isEmpty(data.email)) {
+            errors.push({field: 'email', message: 'E-pasta adrese ir obligāta'});
+        } else {
+            const email = data.email.trim().toLowerCase();
+            // RFC 5322 compliant email regex
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            
+            if (email.length > 254) {
+                errors.push({field: 'email', message: 'E-pasta adrese pārāk gara (maksimums 254 simboli)'});
+            } else if (!emailRegex.test(email)) {
+                errors.push({field: 'email', message: 'Nederīgs e-pasta formāts'});
+            } else if (email.includes('..')) {
+                errors.push({field: 'email', message: 'E-pasta adresē nedrīkst būt divi punkti pēc kārtas'});
+            } else if (email.startsWith('.') || email.includes('@.') || email.includes('.@')) {
+                errors.push({field: 'email', message: 'Nederīgs e-pasta formāts'});
+            } else {
+                // Check for suspicious patterns
+                const localPart = email.split('@')[0];
+                if (localPart.length > 64) {
+                    errors.push({field: 'email', message: 'E-pasta vārds pārāk garš (maksimums 64 simboli)'});
+                }
+            }
+        }
+        
+        // Password validation (secure)
+        if (isEmpty(data.password)) {
+            errors.push({field: 'password', message: 'Parole ir obligāta'});
+        } else {
+            const password = data.password;
+            if (password.length < 8) {
+                errors.push({field: 'password', message: 'Parolei jābūt vismaz 8 simboliem'});
+            } else if (password.length > 128) {
+                errors.push({field: 'password', message: 'Parole pārāk gara (maksimums 128 simboli)'});
+            } else {
+                let strengthErrors = [];
+                if (!/[a-z]/.test(password)) {
+                    strengthErrors.push('mazo burtu');
+                }
+                if (!/[A-Z]/.test(password)) {
+                    strengthErrors.push('lielo burtu');
+                }
+                if (!/[0-9]/.test(password)) {
+                    strengthErrors.push('ciparu');
+                }
+                if (!/[^a-zA-Z0-9]/.test(password)) {
+                    strengthErrors.push('speciālo simbolu');
+                }
+                
+                if (strengthErrors.length > 0) {
+                    errors.push({field: 'password', message: `Parolei jāsatur: ${strengthErrors.join(', ')}`});
+                }
+                
+                // Check for common weak passwords
+                const commonPasswords = ['password', '123456', 'qwerty', 'admin', 'letmein'];
+                if (commonPasswords.includes(password.toLowerCase())) {
+                    errors.push({field: 'password', message: 'Parole pārāk vienkārša - izvēlieties sarežģītāku'});
+                }
+            }
+        }
+        
+        // Role validation
+        const validRoles = ['admin', 'warehouse', 'shelf'];
+        if (isEmpty(data.role)) {
+            errors.push({field: 'role', message: 'Loma ir obligāta'});
+        } else if (!validRoles.includes(data.role)) {
+            errors.push({field: 'role', message: 'Izvēlētā loma nav derīga'});
+        }
+        
+        return errors;
+    }
+    
+    // User validation error display functions
+    function clearUserFieldErrors() {
+        const errorFields = ['firstName', 'lastName', 'email', 'password', 'role'];
+        errorFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            const formGroup = field ? field.closest('.form-group') : null;
+            
+            if (formGroup) {
+                formGroup.classList.remove('has-error', 'has-success');
+            }
+            if (errorDiv) {
+                errorDiv.textContent = '';
+            }
+        });
+    }
+    
+    function showUserValidationErrors(errors) {
+        clearUserFieldErrors();
+        
+        let hasErrors = false;
+        
+        errors.forEach(error => {
+            if (error.field && error.message) {
+                const field = document.getElementById(error.field);
+                const errorDiv = document.getElementById(error.field + '-error');
+                const formGroup = field ? field.closest('.form-group') : null;
+                
+                if (field && errorDiv && formGroup) {
+                    formGroup.classList.add('has-error');
+                    errorDiv.textContent = error.message;
+                    hasErrors = true;
+                }
+            }
+        });
+        
+        // Scroll to first error
+        if (hasErrors) {
+            const firstErrorField = document.querySelector('.form-group.has-error');
+            if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }
+
+    function submitUserForm(event) {
+        if (event) event.preventDefault();
+        
+        // Clear previous errors
+        clearUserFieldErrors();
+        
+        const formData = {
+            first_name: document.getElementById('firstName').value.trim(),
+            last_name: document.getElementById('lastName').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+            role: document.getElementById('role').value
+        };
+        
+        console.log('User form data being sent:', formData);
+        
+        // Client-side validation
+        const errors = validateUserData(formData);
+        if (errors.length > 0) {
+            console.log('User validation errors:', errors);
+            showUserValidationErrors(errors);
+            alert('Lūdzu izlabojiet atzīmētos laukus un mēģiniet vēlreiz');
+            return;
+        }
+        
+        const submitButton = event.target;
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Saglabā...';
+        submitButton.disabled = true;
+        
+        fetch('add_user.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert('Lietotājs veiksmīgi pievienots!');
+                document.getElementById('addUserModal').style.display = 'none';
+                document.getElementById('addUserForm').reset();
+                if (typeof loadUsers === 'function') {
+                    loadUsers();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Kļūda pievienojot lietotāju');
+        })
+        .finally(() => {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        });
     }
     </script>
 
@@ -1642,6 +2303,56 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             text-align: right;
         }
 
+        /* Error message styling */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            min-height: 1.2rem;
+            display: block;
+        }
+
+        .form-group.has-error input,
+        .form-group.has-error select,
+        .form-group.has-error textarea {
+            border: 2px solid #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .form-group.has-error label {
+            color: #dc3545;
+        }
+
+        .form-group.has-success input,
+        .form-group.has-success select,
+        .form-group.has-success textarea {
+            border: 2px solid #28a745;
+            background-color: #f8fff9;
+        }
+
+        .validation-summary {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+
+        .validation-summary h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .validation-summary ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .validation-summary li {
+            margin-bottom: 0.25rem;
+        }
+
                  @media (max-width: 768px) {
              .reports-grid {
                  grid-template-columns: 1fr;
@@ -1684,7 +2395,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                  box-shadow: none !important;
                  border: 1px solid #ddd;
              }
-         }
+        }
     </style>
 </body>
 </html> 

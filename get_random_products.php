@@ -19,9 +19,8 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Noliktavas dar
 try {
     // Get random products from the database
     $stmt = $pdo->query("
-        SELECT p.*, c.name as category_name 
-        FROM products p 
-        JOIN categories c ON p.category_id = c.id 
+        SELECT id, product_code, product_name, category, barcode 
+        FROM products 
         ORDER BY RAND() 
         LIMIT 5
     ");
@@ -37,9 +36,9 @@ try {
     $formattedProducts = array_map(function($product) {
         return [
             'id' => $product['id'],
-            'code' => $product['code'],
-            'name' => $product['name'],
-            'category' => $product['category_name'],
+            'code' => $product['product_code'],
+            'name' => $product['product_name'],
+            'category' => $product['category'],
             'barcode' => $product['barcode']
         ];
     }, $products);

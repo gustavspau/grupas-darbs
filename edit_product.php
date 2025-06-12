@@ -12,64 +12,192 @@ if (!isAdmin()) {
 // Get POST data
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Validate required fields
-$required_fields = ['id', 'product_code', 'product_name', 'category', 'unit_price', 'min_stock_level'];
-foreach ($required_fields as $field) {
-    if (!isset($data[$field]) || $data[$field] === '') {
-        http_response_code(400);
-        echo json_encode(['error' => 'Visiem laukiem jābūt aizpildītiem']);
+// Comprehensive validation function
+function validateProductData($data, $pdo, $isEdit = false, $productId = null) {
+    $errors = [];
+    
+    // Required fields validation
+    $required_fields = ['product_code', 'product_name', 'category', 'unit_price', 'min_stock_level'];
+    foreach ($required_fields as $field) {
+        if (!isset($data[$field]) || trim($data[$field]) === '') {
+            $errors[] = "Lauks '{$field}' ir obligāts";
+        }
+    }
+    
+    if (!empty($errors)) {
+        return $errors;
+    }
+    
+    // Product code validation
+    $product_code = trim($data['product_code']);
+    if (strlen($product_code) < 3 || strlen($product_code) > 20) {
+        $errors[] = 'Produkta kodam jābūt no 3 līdz 20 simboliem';
+    }
+    if (!preg_match('/^[A-Z0-9_-]+$/i', $product_code)) {
+        $errors[] = 'Produkta kods drīkst saturēt tikai burtus, ciparus, zemsvītras un domuzīmes';
+    }
+    
+    // Product name validation
+    $product_name = trim($data['product_name']);
+    if (strlen($product_name) < 2 || strlen($product_name) > 100) {
+        $errors[] = 'Produkta nosaukumam jābūt no 2 līdz 100 simboliem';
+    }
+    if (!preg_match('/^[\p{L}\p{N}\s\-\.,&()]+$/u', $product_name)) {
+        $errors[] = 'Produkta nosaukums satur neatļautus simbolus';
+    }
+    
+    // Category validation
+    $category = trim($data['category']);
+    if (strlen($category) < 2 || strlen($category) > 50) {
+        $errors[] = 'Kategorijas nosaukumam jābūt no 2 līdz 50 simboliem';
+    }
+    
+    // Unit price validation
+    $unit_price = $data['unit_price'];
+    if (!is_numeric($unit_price) || $unit_price < 0) {
+        $errors[] = 'Vienības cenai jābūt pozitīvam skaitlim';
+    }
+    if ($unit_price > 999999.99) {
+        $errors[] = 'Vienības cena nedrīkst pārsniegt 999999.99 EUR';
+    }
+    
+    // Min stock level validation
+    $min_stock = $data['min_stock_level'];
+    if (!is_numeric($min_stock) || $min_stock < 0 || $min_stock != floor($min_stock)) {
+        $errors[] = 'Minimālajam krājuma līmenim jābūt pozitīvam veselam skaitlim';
+    }
+    if ($min_stock > 999999) {
+        $errors[] = 'Minimālais krājuma līmenis nedrīkst pārsniegt 999999';
+    }
+    
+    // Barcode validation (if provided)
+    if (!empty($data['barcode'])) {
+        $barcode = trim($data['barcode']);
+        if (!preg_match('/^[0-9]{8,13}$/', $barcode)) {
+            $errors[] = 'Svītrkods drīkst saturēt tikai ciparus un būt 8-13 simbolu garš';
+        }
+        
+        // Check barcode uniqueness
+        if ($isEdit) {
+            $stmt = $pdo->prepare("SELECT id FROM products WHERE barcode = ? AND id != ?");
+            $stmt->execute([$barcode, $productId]);
+        } else {
+            $stmt = $pdo->prepare("SELECT id FROM products WHERE barcode = ?");
+            $stmt->execute([$barcode]);
+        }
+        
+        if ($stmt->rowCount() > 0) {
+            $errors[] = 'Šāds svītrkods jau eksistē sistēmā';
+        }
+    }
+    
+    // Description validation (if provided)
+    if (!empty($data['description'])) {
+        $description = trim($data['description']);
+        if (strlen($description) > 500) {
+            $errors[] = 'Apraksts nedrīkst pārsniegt 500 simbolus';
+        }
+    }
+    
+    // Check product code uniqueness
+    if ($isEdit) {
+        $stmt = $pdo->prepare("SELECT id FROM products WHERE product_code = ? AND id != ?");
+        $stmt->execute([$product_code, $productId]);
+    } else {
+        $stmt = $pdo->prepare("SELECT id FROM products WHERE product_code = ?");
+        $stmt->execute([$product_code]);
+    }
+    
+    if ($stmt->rowCount() > 0) {
+        $errors[] = 'Šāds produkta kods jau eksistē sistēmā';
+    }
+    
+    return $errors;
+}
+
+// Validate ID field for editing
+if (!isset($data['id']) || !is_numeric($data['id']) || $data['id'] <= 0) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Nederīgs produkta ID']);
+    exit;
+}
+
+$product_id = intval($data['id']);
+
+// Check if product exists
+try {
+    $stmt = $pdo->prepare("SELECT id FROM products WHERE id = ?");
+    $stmt->execute([$product_id]);
+    if ($stmt->rowCount() === 0) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Produkts nav atrasts']);
         exit;
     }
+} catch (PDOException $e) {
+    error_log("Database error checking product existence: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Sistēmas kļūda']);
+    exit;
+}
+
+// Validate the input data
+$validation_errors = validateProductData($data, $pdo, true, $product_id);
+
+if (!empty($validation_errors)) {
+    http_response_code(400);
+    echo json_encode([
+        'error' => 'Validācijas kļūdas',
+        'validation_errors' => $validation_errors
+    ]);
+    exit;
 }
 
 try {
-    // Check if product code already exists for other products
-    $stmt = $pdo->prepare("SELECT id FROM products WHERE product_code = ? AND id != ?");
-    $stmt->execute([$data['product_code'], $data['id']]);
-    if ($stmt->rowCount() > 0) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Šāds produkta kods jau eksistē']);
-        exit;
-    }
-
-    // Check if barcode already exists for other products (if provided)
-    if (!empty($data['barcode'])) {
-        $stmt = $pdo->prepare("SELECT id FROM products WHERE barcode = ? AND id != ?");
-        $stmt->execute([$data['barcode'], $data['id']]);
-        if ($stmt->rowCount() > 0) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Šāds svītrkods jau eksistē']);
-            exit;
-        }
-    }
+    // Sanitize data
+    $product_code = strtoupper(trim($data['product_code']));
+    $product_name = trim($data['product_name']);
+    $category = trim($data['category']);
+    $barcode = !empty($data['barcode']) ? trim($data['barcode']) : null;
+    $description = !empty($data['description']) ? trim($data['description']) : null;
+    $unit_price = round(floatval($data['unit_price']), 2);
+    $min_stock_level = intval($data['min_stock_level']);
 
     // Update product
     $stmt = $pdo->prepare("
         UPDATE products 
         SET product_code = ?, product_name = ?, category = ?, barcode = ?, 
-            unit_price = ?, min_stock_level = ?, description = ?
+            unit_price = ?, min_stock_level = ?, description = ?, updated_at = NOW()
         WHERE id = ?
     ");
     
     $stmt->execute([
-        $data['product_code'],
-        $data['product_name'],
-        $data['category'],
-        $data['barcode'] ?? null,
-        $data['unit_price'],
-        $data['min_stock_level'],
-        $data['description'] ?? null,
-        $data['id']
+        $product_code,
+        $product_name,
+        $category,
+        $barcode,
+        $unit_price,
+        $min_stock_level,
+        $description,
+        $product_id
     ]);
 
     // Return success response
     echo json_encode([
         'success' => true,
-        'message' => 'Produkts veiksmīgi atjaunināts'
+        'message' => 'Produkts veiksmīgi atjaunināts',
+        'product' => [
+            'id' => $product_id,
+            'product_code' => $product_code,
+            'product_name' => $product_name,
+            'category' => $category,
+            'unit_price' => $unit_price,
+            'min_stock_level' => $min_stock_level
+        ]
     ]);
 
 } catch (PDOException $e) {
+    error_log("Database error in edit_product.php: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Kļūda atjauninot produktu: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Sistēmas kļūda. Lūdzu mēģiniet vēlāk.']);
 }
 ?> 
