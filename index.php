@@ -18,7 +18,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
     <title>Noliktavas Vadības Sistēma</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="inventory.js"></script>
+    <script src="reports.js"></script>
 </head>
 <body>
     <!-- Set initial screen based on user role -->
@@ -236,7 +238,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             <!-- Add Product Modal -->
             <div id="addProductModal" class="modal">
                 <div class="modal-content">
-                    <span class="close">&times;</span>
+                    <span class="close" onclick="closeModal()">&times;</span>
                     <h2>Pievienot jaunu produktu</h2>
                     <form id="addProductForm">
                         <div class="form-group">
@@ -280,10 +282,53 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </div>
             </div>
 
-            <!-- Other admin sections -->
+            <!-- Admin Reports Section -->
             <div id="admin-reports" class="content-section">
-                <h2>Atskaites</h2>
-                <p>Šeit tiks attēlotas dažādas atskaites...</p>
+                <div class="reports-header">
+                    <h2>Atskaites un analīze</h2>
+                    <div class="reports-actions">
+                        <button class="btn btn-secondary" onclick="printReport()">
+                            <i class="fas fa-print"></i> Drukāt
+                        </button>
+                        <button class="btn btn-primary" onclick="exportReport('PDF')">
+                            <i class="fas fa-file-pdf"></i> Eksportēt PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Overview Stats -->
+                <div class="stats-grid reports-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-boxes"></i>
+                        <div class="stat-info">
+                            <h3 id="totalProducts">-</h3>
+                            <p>Kopējie produkti</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">-</h3>
+                            <p>Aktīvie lietotāji</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-euro-sign"></i>
+                        <div class="stat-info">
+                            <h3 id="totalValue">€0.00</h3>
+                            <p>Kopējā vērtība</p>
+                        </div>
+                    </div>
+                    <div class="stat-card alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="stat-info">
+                            <h3 id="lowStockItems">-</h3>
+                            <p>Zems krājums</p>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
             <div id="admin-settings" class="content-section">
@@ -623,6 +668,8 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             loadProducts();
         } else if (section === 'users') {
             loadUsers();
+        } else if (section === 'reports') {
+            loadOverviewStats();
         }
     }
 
@@ -1265,6 +1312,219 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         .incoming-product.new {
             animation: fadeIn 0.5s ease-out;
         }
+
+        /* Reports Styles */
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .reports-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .reports-stats {
+            margin-bottom: 2rem;
+        }
+
+        .stat-card.alert {
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+        }
+
+        .simple-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .simple-section h3 {
+            margin: 0 0 2rem 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .category-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .placeholder-icon {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .category-placeholder p {
+            color: #6c757d;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .report-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .report-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #666;
+        }
+
+        .action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btn span {
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .filter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-control {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+                 @media (max-width: 768px) {
+             .reports-grid {
+                 grid-template-columns: 1fr;
+             }
+             
+             .quick-actions {
+                 grid-template-columns: 1fr;
+             }
+             
+             .reports-header {
+                 flex-direction: column;
+                 gap: 1rem;
+                 align-items: stretch;
+             }
+         }
+
+         /* Print Styles */
+         @media print {
+             .sidebar, .header-right, .reports-actions {
+                 display: none !important;
+             }
+             
+             .main-content {
+                 margin-left: 0 !important;
+                 padding: 20px !important;
+             }
+             
+             .reports-header h2 {
+                 text-align: center;
+                 margin-bottom: 30px;
+             }
+             
+             .stats-grid {
+                 grid-template-columns: repeat(4, 1fr) !important;
+                 gap: 15px !important;
+             }
+             
+             .stat-card {
+                 break-inside: avoid;
+                 box-shadow: none !important;
+                 border: 1px solid #ddd;
+             }
+         }
     </style>
 </body>
 </html> 
