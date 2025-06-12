@@ -745,6 +745,7 @@ function validateShelfForm(event) {
     const productQuantity = form.elements['product_quantity'].value;
     const shelfStatus = form.elements['shelf_status'].value;
     const shelfComment = form.elements['shelf_comment'].value;
+    const productCode = form.elements['product_code'].value;
 
     let isValid = true;
 
@@ -776,13 +777,20 @@ function validateShelfForm(event) {
         isValid = false;
     }
 
+    // Validate Product Code
+    if (productCode === '') {
+        showInlineError(document.getElementById('productCodeInput'), 'Lūdzu ievadiet produkta kodu.');
+        isValid = false;
+    }
+
     if (isValid) {
         // If validation passes, send data to backend
         const formData = {
             shelf_code: shelfCode,
             product_quantity: quantityNum,
             shelf_status: shelfStatus,
-            shelf_comment: shelfComment
+            shelf_comment: shelfComment,
+            product_code: productCode // Add product code to form data
         };
 
         fetch('save_shelf_data.php', {

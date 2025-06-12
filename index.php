@@ -802,6 +802,11 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                                 <div class="error-message" id="productQuantity-error"></div>
                             </div>
                             <div class="form-group">
+                                <label for="productCodeInput">Produkta kods:</label>
+                                <input type="text" id="productCodeInput" name="product_code" class="form-control" placeholder="Ievadiet produkta kodu">
+                                <div class="error-message" id="productCodeInput-error"></div>
+                            </div>
+                            <div class="form-group">
                                 <label for="shelfStatus">Stāvoklis:</label>
                                 <select id="shelfStatus" name="shelf_status" class="form-control">
                                     <option value="">Izvēlieties stāvokli</option>
