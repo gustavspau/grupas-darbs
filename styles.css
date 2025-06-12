@@ -307,9 +307,12 @@ body {
     align-items: center;
     gap: 15px;
     padding: 15px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
+    background: #fdfdfd;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
 }
 
 .activity-item:hover,
@@ -329,7 +332,10 @@ body {
 
 .activity-details,
 .task-details {
-    flex: 1;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .activity-details p,
@@ -555,22 +561,224 @@ body {
     background: #d1ecf1;
 }
 
-/* Forms */
+/* Receive Products Section */
 .receive-form {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    align-items: flex-end;
+}
+
+.receive-form .form-group {
+    flex-grow: 1;
+    margin-bottom: 0;
 }
 
 .received-items {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     margin-top: 30px;
 }
 
 .received-items h3 {
-    margin-bottom: 15px;
+    font-size: 1.5rem;
     color: #333;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.received-items .activity-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.received-items .activity-details {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.received-items .activity-details p strong {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.received-items .quantity-input-group {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.received-items .item-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.received-items .btn {
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+.received-items .activity-item.confirmed {
+    background-color: #e6ffe6;
+    border-color: #a3e6a3;
+}
+
+.received-items .product-info-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.received-items .product-info-left i {
+    font-size: 2.2rem;
+    color: #667eea;
+}
+
+.received-items .product-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.received-items .product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.received-items .product-meta {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.received-items .product-quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 20px;
+}
+
+.received-items .quantity-btn {
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #495057;
+    transition: background-color 0.2s ease;
+}
+
+.received-items .quantity-btn:hover {
+    background: #dee2e6;
+}
+
+.received-items .product-quantity {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+    -moz-appearance: textfield; /* Remove Firefox spinner */
+}
+
+.received-items .product-quantity::-webkit-outer-spin-button,
+.received-items .product-quantity::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Remove Chrome/Safari spinner */
+    margin: 0;
+}
+
+.received-items .item-actions .btn {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.received-items .item-actions .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.received-items .item-actions .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.received-items .item-actions .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.received-items .item-actions .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.received-items .activity-item.confirmed {
+    background-color: #e6ffe6; /* Lighter green for confirmed items */
+    border-color: #28a745;
+    color: #155724;
+}
+
+.received-items .activity-item.confirmed .product-info-left i,
+.received-items .activity-item.confirmed .product-name,
+.received-items .activity-item.confirmed .product-meta {
+    color: #155724;
+}
+
+.received-items .activity-item.confirmed .quantity-btn,
+.received-items .activity-item.confirmed .product-quantity {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.received-items .activity-item.confirmed .item-actions .btn {
+    opacity: 0.7;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .receive-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .received-items .activity-item {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .received-items .product-info-left {
+        flex-basis: 100%;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .received-items .product-quantity-controls {
+        flex-basis: 100%;
+        justify-content: center;
+        margin: 0 0 15px 0;
+    }
+
+    .received-items .item-actions {
+        flex-basis: 100%;
+        justify-content: center;
+    }
+
+    .received-items .item-actions .btn {
+        flex-grow: 1;
+    }
 }
 
 /* Responsive Design */

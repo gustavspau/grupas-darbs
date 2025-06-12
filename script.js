@@ -86,11 +86,6 @@ function showWarehouseSection(sectionName) {
     
     // Update navigation
     updateNavigation('#warehouse-screen', sectionName);
-    
-    // Initialize warehouse receive section if needed
-    if (sectionName === 'receive' && typeof initializeWarehouseReceive === 'function') {
-        initializeWarehouseReceive();
-    }
 }
 
 // Shelf Dashboard Functions
@@ -130,10 +125,13 @@ function handleKeyboardNavigation(e) {
     }
     
     // Enter key in login form
-    if (e.key === 'Enter' && document.getElementById('login-screen').classList.contains('active')) {
-        const loginBtn = document.querySelector('.login-btn');
-        if (loginBtn) {
-            loginBtn.click();
+    if (e.key === 'Enter') {
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen && loginScreen.classList.contains('active')) {
+            const loginBtn = document.querySelector('.login-btn');
+            if (loginBtn) {
+                loginBtn.click();
+            }
         }
     }
 }
@@ -157,15 +155,29 @@ function showShelfDetails(shelfId) {
 // Warehouse Operations
 function initializeWarehouseOperations() {
     // Initialize barcode scanning simulation
-    const barcodeInputs = document.querySelectorAll('input[placeholder*="svītrkod"]');
-    barcodeInputs.forEach(input => {
-        input.addEventListener('keypress', function(e) {
+    const barcodeInput = document.getElementById('productScan');
+    if (barcodeInput) {
+        barcodeInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 simulateBarcodeScan(this.value);
                 this.value = '';
             }
         });
-    });
+    }
+
+    // Load inventory items when the warehouse inventory section is displayed
+    const warehouseInventorySection = document.getElementById('warehouse-inventory');
+    if (warehouseInventorySection) {
+        // Observe when the warehouse-inventory section becomes active
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class' && warehouseInventorySection.classList.contains('active')) {
+                    loadInventoryItems();
+                }
+            });
+        });
+        observer.observe(warehouseInventorySection, { attributes: true });
+    }
 }
 
 function simulateBarcodeScan(barcode) {
@@ -182,30 +194,75 @@ function simulateBarcodeScan(barcode) {
 }
 
 function addScannedItem(product) {
-    const receivedItems = document.querySelector('.received-items');
-    if (receivedItems) {
+    const receivedItemsList = document.getElementById('receivedItemsList');
+    if (receivedItemsList) {
+        const uniqueId = `${product.name.replace(/\s/g, '-_')}-${Date.now()}`;
         const itemElement = document.createElement('div');
         itemElement.className = 'activity-item';
         itemElement.innerHTML = `
             <i class="fas fa-box"></i>
             <div class="activity-details">
-                <p><strong>${product.name}</strong> - Daudzums: ${product.quantity}</p>
+                <p><strong>${product.name}</strong></p>
+                <div class="quantity-input-group">
+                    <label for="quantity-${uniqueId}">Daudzums:</label>
+                    <input type="number" id="quantity-${uniqueId}" value="${product.quantity}" min="1" class="item-quantity-input">
+                </div>
                 <span class="location">${product.location}</span>
             </div>
-            <button class="btn btn-sm" onclick="confirmReceive(this)">Apstiprināt</button>
+            <button class="btn btn-sm btn-primary" onclick="moveToInventory(this, '${product.name}', '${uniqueId}')">Pārvietot uz inventāru</button>
         `;
-        receivedItems.appendChild(itemElement);
+        receivedItemsList.appendChild(itemElement);
     }
 }
 
-function confirmReceive(button) {
+async function moveToInventory(button, productName, uniqueId) {
     const item = button.closest('.activity-item');
-    item.style.backgroundColor = '#d4edda';
-    button.textContent = 'Apstiprināts';
+    const quantityInput = item.querySelector(`#quantity-${uniqueId}`);
+    const quantity = parseInt(quantityInput.value);
+
+    if (isNaN(quantity) || quantity <= 0) {
+        showNotification('Lūdzu ievadiet derīgu daudzumu.', 'error');
+        return;
+    }
+
+    // Disable button and input while processing
     button.disabled = true;
-    
-    // Update statistics
-    updateStats('received');
+    quantityInput.disabled = true;
+    button.textContent = 'Pārvietoju...';
+
+    try {
+        const response = await fetch('move_to_inventory.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ product_name: productName, quantity: quantity })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showNotification(`Produkts "${productName}" (${quantity} gab.) veiksmīgi pārvietots uz inventāru.`, 'success');
+            item.remove(); // Remove item from received list
+            updateStats('moved_to_inventory'); // Update statistics
+            // Refresh the inventory list
+            const inventoryTableBody = document.getElementById('inventoryTableBody');
+            if (inventoryTableBody) {
+                // Assuming you have a function to load inventory items
+                loadInventoryItems();
+            }
+        } else {
+            showNotification(`Kļūda pārvietojot produktu "${productName}" uz inventāru: ${data.message || 'Nezināma kļūda'}`, 'error');
+            button.disabled = false;
+            quantityInput.disabled = false;
+            button.textContent = 'Pārvietot uz inventāru';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification(`Kļūda komunikācijā ar serveri: ${error.message}`, 'error');
+        button.disabled = false;
+        quantityInput.disabled = false;
+        button.textContent = 'Pārvietot uz inventāru';
+    }
 }
 
 // Statistics Update
@@ -298,19 +355,10 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-function clearNotifications() {
-    // Remove all existing notifications
-    const notifications = document.querySelectorAll('.notification');
-    notifications.forEach(notification => {
-        notification.remove();
-    });
-}
-
 // Export functions for global use
 window.showAdminSection = showAdminSection;
 window.showWarehouseSection = showWarehouseSection;
 window.showShelfSection = showShelfSection;
-window.logout = logout;
 window.confirmReceive = confirmReceive;
 
 // Settings functions
@@ -380,4 +428,311 @@ function applyTheme(theme) {
 // Load settings when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
-}); 
+});
+
+// User registration validation (Reverted to basic checks)
+function validateUserForm(formData) {
+    const errors = {};
+    // Minimal validation to ensure fields are not empty if they are required by backend (e.g. for hashing password).
+    if (!formData.get('username')) {
+        errors.username = 'Lietotājvārds nevar būt tukšs.';
+    }
+    if (!formData.get('first_name')) {
+        errors.first_name = 'Vārds nevar būt tukšs.';
+    }
+    if (!formData.get('last_name')) {
+        errors.last_name = 'Uzvārds nevar būt tukšs.';
+    }
+    if (!formData.get('email')) {
+        errors.email = 'E-pasts nevar būt tukšs.';
+    }
+    if (!formData.get('password')) {
+        errors.password = 'Parole nevar būt tukša.';
+    }
+    if (!formData.get('role')) {
+        errors.role = 'Loma nevar būt tukša.';
+    }
+
+    return errors;
+}
+
+// Validation popup functions
+function createValidationPopup() {
+    const popup = document.createElement('div');
+    popup.className = 'validation-popup';
+    popup.innerHTML = `
+        <div class="validation-popup-header">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3 class="validation-popup-title">Validācijas kļūdas</h3>
+        </div>
+        <div class="validation-popup-content">
+            <ul class="validation-list"></ul>
+        </div>
+        <div class="validation-popup-footer">
+            <button class="validation-popup-close">Aizvērt</button>
+        </div>
+    `;
+    document.body.appendChild(popup);
+    return popup;
+}
+
+function showValidationPopup(errors) {
+    let popup = document.querySelector('.validation-popup');
+    if (!popup) {
+        popup = createValidationPopup();
+    }
+
+    const header = popup.querySelector('.validation-popup-header');
+    const title = popup.querySelector('.validation-popup-title');
+    const list = popup.querySelector('.validation-list');
+    const closeBtn = popup.querySelector('.validation-popup-close');
+
+    // Clear previous content
+    list.innerHTML = '';
+
+    // Set header style and icon
+    header.className = 'validation-popup-header error';
+    header.querySelector('i').className = 'fas fa-exclamation-circle';
+    title.textContent = 'Validācijas kļūdas';
+
+    // Add error messages to list
+    Object.entries(errors).forEach(([field, message]) => {
+        const li = document.createElement('li');
+        li.className = 'error';
+        li.innerHTML = `
+            <i class="fas fa-times-circle"></i>
+            <span>${message}</span>
+        `;
+        list.appendChild(li);
+    });
+
+    // Show popup
+    popup.classList.add('show');
+
+    // Add close button functionality
+    closeBtn.onclick = () => {
+        popup.classList.remove('show');
+    };
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        popup.classList.remove('show');
+    }, 5000);
+}
+
+function showSuccessPopup(message) {
+    let popup = document.querySelector('.validation-popup');
+    if (!popup) {
+        popup = createValidationPopup();
+    }
+
+    const header = popup.querySelector('.validation-popup-header');
+    const title = popup.querySelector('.validation-popup-title');
+    const list = popup.querySelector('.validation-list');
+    const closeBtn = popup.querySelector('.validation-popup-close');
+
+    // Clear previous content
+    list.innerHTML = '';
+
+    // Set header style and icon
+    header.className = 'validation-popup-header success';
+    header.querySelector('i').className = 'fas fa-check-circle';
+    title.textContent = 'Veiksmīgi';
+
+    // Add success message
+    const li = document.createElement('li');
+    li.className = 'success';
+    li.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    list.appendChild(li);
+
+    // Show popup
+    popup.classList.add('show');
+
+    // Add close button functionality
+    closeBtn.onclick = () => {
+        popup.classList.remove('show');
+    };
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        popup.classList.remove('show');
+    }, 3000);
+}
+
+// Helper to show inline error messages
+function showInlineError(inputElement, message) {
+    // Remove any existing error messages for this input
+    let errorElement = inputElement.nextElementSibling;
+    if (errorElement && errorElement.classList.contains('inline-error-message')) {
+        errorElement.remove();
+    }
+
+    if (message) {
+        errorElement = document.createElement('div');
+        errorElement.className = 'inline-error-message text-danger mt-1';
+        errorElement.textContent = message;
+        inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
+        inputElement.classList.add('is-invalid'); // Add Bootstrap's invalid class for styling
+    } else {
+        inputElement.classList.remove('is-invalid');
+    }
+}
+
+// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+// Placeholder for availability checks (backend files removed)
+async function checkEmailAvailability(email) {
+    return { available: true }; 
+}
+
+async function checkUsernameAvailability(username) {
+    return { available: true }; 
+}
+
+// Add user form submission handler (reverted to basic)
+document.addEventListener('DOMContentLoaded', function() {
+    const addUserForm = document.getElementById('addUserForm');
+    const emailInput = document.getElementById('email');
+    const usernameInput = document.getElementById('username');
+
+    // Revert email/username input event listeners if they are still present
+    if (emailInput) {
+        emailInput.removeEventListener('input', debounce(async (e) => {}, 500)); // Remove previous listener
+    }
+    if (usernameInput) {
+        usernameInput.removeEventListener('input', debounce(async (e) => {}, 500)); // Remove previous listener
+    }
+
+    if (addUserForm) {
+        addUserForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Clear previous error messages and highlighting
+            document.querySelectorAll('.inline-error-message').forEach(el => el.remove());
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            
+            // Basic validation for required fields (can be removed if backend handles everything)
+            const formData = new FormData(this);
+            const errors = validateUserForm(formData);
+
+            if (Object.keys(errors).length > 0) {
+                showValidationPopup(errors);
+                Object.entries(errors).forEach(([field, message]) => {
+                    const input = document.getElementById(field);
+                    if (input) {
+                        showInlineError(input, message);
+                    }
+                });
+                return;
+            }
+
+            const userData = {
+                username: formData.get('username'),
+                first_name: formData.get('firstName'), // Still needs to be firstName from form
+                last_name: formData.get('lastName'),   // Still needs to be lastName from form
+                email: formData.get('email'),
+                password: formData.get('password'),
+                role: formData.get('role')
+            };
+            
+            // console.log('Sending user data:', userData); // Removed debug log
+
+            fetch('add_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessPopup('Lietotājs veiksmīgi pievienots!');
+                    addUserForm.reset(); 
+                } else {
+                    let errorMessage = 'Kļūda pievienojot lietotāju.';
+                    if (data.error) {
+                        errorMessage = data.error;
+                        if (data.details) {
+                            Object.entries(data.details).forEach(([field, message]) => {
+                                const input = document.getElementById(field);
+                                if (input) {
+                                    showInlineError(input, message);
+                                }
+                            });
+                        }
+                    }
+                    showValidationPopup({ general: errorMessage });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showValidationPopup({ general: 'Tīkla kļūda vai servera atbilde nav apstrādājama.' });
+            });
+        });
+    }
+});
+
+// Function to load inventory items from the database
+async function loadInventoryItems() {
+    console.log('Loading inventory items...');
+    const inventoryTableBody = document.getElementById('inventoryTableBody');
+    if (!inventoryTableBody) {
+        console.error('Inventory table body not found');
+        return;
+    }
+
+    inventoryTableBody.innerHTML = ''; // Clear existing content
+
+    try {
+        const response = await fetch('get_inventory.php');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        if (data.success && data.inventory.length > 0) {
+            data.inventory.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.product_code || ''}</td>
+                    <td>${item.product_name || ''}</td>
+                    <td>${item.category || ''}</td>
+                    <td>${item.quantity || 0}</td>
+                    <td>€${parseFloat(item.unit_price || 0).toFixed(2)}</td>
+                    <td><span class="status active">Pieejams</span></td>
+                    <td>
+                        <button class="btn-icon edit" onclick="editProduct(${item.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-icon delete" onclick="deleteProduct(${item.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                inventoryTableBody.appendChild(row);
+            });
+        } else if (data.success && data.inventory.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="7" class="text-center">Inventārā nav neviena produkta</td>';
+            inventoryTableBody.appendChild(row);
+        } else {
+            console.error('Error fetching inventory:', data.message || 'Unknown error');
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="7" class="text-center">Kļūda ielādējot inventāru: ${data.message || 'Nezināma kļūda'}</td>`;
+            inventoryTableBody.appendChild(row);
+        }
+    } catch (error) {
+        console.error('Error loading inventory items:', error);
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="7" class="text-center">Kļūda komunikācijā ar serveri: ${error.message}</td>`;
+        inventoryTableBody.appendChild(row);
+    }
+} 

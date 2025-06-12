@@ -512,4 +512,23 @@ function deleteProduct(productId) {
             showNotification('Kļūda dzēšot produktu', 'error');
         });
     }
-} 
+}
+
+// Expose functions to the global scope
+window.loadProducts = loadProducts;
+window.validateProductCode = validateProductCode;
+window.validateProductName = validateProductName;
+window.validateCategory = validateCategory;
+window.validateBarcode = validateBarcode;
+window.validateUnitPrice = validateUnitPrice;
+window.validateMinStock = validateMinStock;
+window.validateDescription = validateDescription;
+window.validateProductForm = validateProductForm;
+window.displayValidationErrors = displayValidationErrors;
+window.showAddProductModal = showAddProductModal;
+window.closeModal = closeModal;
+window.searchProducts = searchProducts;
+window.setupAddProductForm = setupAddProductForm;
+window.handleAddProductSubmit = handleAddProductSubmit;
+window.editProduct = editProduct;
+window.deleteProduct = deleteProduct; 

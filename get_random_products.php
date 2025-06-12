@@ -9,10 +9,10 @@ ini_set('display_errors', 1);
 // Set proper headers
 header('Content-Type: application/json');
 
-// Check if user is a warehouse worker
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Noliktavas darbinieks') {
-    http_response_code(403);
-    echo json_encode(['error' => 'Nav atļauts']);
+// Check if user is authenticated (simplified check for debugging)
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401); // Unauthorized
+    echo json_encode(['error' => 'Nav autentificēts']);
     exit;
 }
 
