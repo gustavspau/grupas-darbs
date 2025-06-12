@@ -181,13 +181,31 @@ body {
     width: 250px;
     height: calc(100vh - 70px);
     background: white;
-    padding: 20px 0;
+    padding: 0;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 }
 
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 25px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.sidebar-header i {
+    font-size: 1.3rem;
+    color: #667eea;
+}
+
 .nav-menu {
     list-style: none;
+    padding: 20px 0;
 }
 
 .nav-menu li {
