@@ -1,27 +1,21 @@
 // Function to load products from the database
 function loadProducts() {
-    console.log('Loading products...');
-    
     fetch('get_products.php')
         .then(response => {
-            console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             return response.json();
         })
         .then(data => {
-            console.log('Received data:', data);
             const tableBody = document.getElementById('productsTableBody');
             if (!tableBody) {
-                console.error('Products table body not found');
                 return;
             }
             
             tableBody.innerHTML = '';
 
             if (data.error) {
-                console.error('Error from server:', data.error);
                 tableBody.innerHTML = `<tr><td colspan="8" class="text-center">Kļūda: ${data.error}</td></tr>`;
                 return;
             }
@@ -36,7 +30,7 @@ function loadProducts() {
             }
 
             products.forEach(product => {
-                console.log('Processing product:', product);
+                // Process each product
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${product.product_code || ''}</td>
@@ -55,7 +49,6 @@ function loadProducts() {
             });
         })
         .catch(error => {
-            console.error('Error loading products:', error);
             const tableBody = document.getElementById('productsTableBody');
             if (tableBody) {
                 tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Kļūda ielādējot produktus</td></tr>';
@@ -242,7 +235,7 @@ function searchProducts() {
 
 // Add event listeners when the document is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inventory.js DOM Content Loaded');
+            // DOM content loaded
     
     // Load products when the page loads
     loadProducts();
@@ -274,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Global functions for form handling
 function setupAddProductForm() {
     const addProductForm = document.getElementById('addProductForm');
-    console.log('Add product form found:', addProductForm);
+            // Add product form setup
     if (addProductForm) {
         // Remove any existing listeners
         addProductForm.removeEventListener('submit', handleAddProductSubmit);
@@ -288,7 +281,7 @@ function setupAddProductForm() {
 
 function handleAddProductSubmit(e) {
     e.preventDefault();
-    console.log('Form submitted');
+    // Form submitted
     
     const formData = {
         product_code: document.getElementById('productCode').value,
@@ -300,7 +293,7 @@ function handleAddProductSubmit(e) {
         min_stock_level: document.getElementById('minStock').value
     };
 
-    console.log('Form data:', formData);
+    // Validate form data
 
     // Validate form data
     const validationErrors = validateProductForm(formData);
@@ -325,7 +318,7 @@ function handleAddProductSubmit(e) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Response data:', data);
+                    // Handle response
         if (data.success) {
             if (typeof showNotification !== 'undefined') {
                 showNotification('Produkts veiksmīgi pievienots!', 'success');

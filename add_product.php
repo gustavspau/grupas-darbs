@@ -25,9 +25,7 @@ if (!isAdmin() && !hasRole('warehouse')) {
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
-// Debug logging
-error_log("Raw input: " . $input);
-error_log("Decoded data: " . print_r($data, true));
+// Input processing
 
 // Check if data was received
 if (!$data || !is_array($data)) {
@@ -204,8 +202,7 @@ if (!empty($validation_errors)) {
     http_response_code(422);
     echo json_encode([
         'error' => 'Datu validācijas kļūdas',
-        'validation_errors' => $mapped_errors,
-        'debug_data' => $data // Add debug info to see what's being sent
+        'validation_errors' => $mapped_errors
     ]);
     exit;
 }

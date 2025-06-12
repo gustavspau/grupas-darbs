@@ -48,26 +48,30 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         </header>
 
         <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-archive"></i>
+                <span>STASH</span>
+            </div>
             <ul class="nav-menu">
                 <li><a href="#" onclick="showAdminSection('dashboard')" class="nav-link active">
-                    <i class="fas fa-chart-dashboard"></i>
-                    Pārskats
+                    <i class="fas fa-home"></i>
+                    Sākums
+                </a></li>
+                <li><a href="#" onclick="showAdminSection('inventory')" class="nav-link">
+                    <i class="fas fa-plus"></i>
+                    Pievienot produktu
+                </a></li>
+                <li><a href="#" onclick="showAddUserModal()" class="nav-link">
+                    <i class="fas fa-plus"></i>
+                    Pievienot lietotāju
                 </a></li>
                 <li><a href="#" onclick="showAdminSection('users')" class="nav-link">
                     <i class="fas fa-users"></i>
                     Lietotāji
                 </a></li>
-                <li><a href="#" onclick="showAdminSection('inventory')" class="nav-link">
-                    <i class="fas fa-boxes"></i>
-                    Inventārs
-                </a></li>
-                <li><a href="#" onclick="showAdminSection('reports')" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    Atskaites
-                </a></li>
-                <li><a href="#" onclick="showAdminSection('settings')" class="nav-link">
-                    <i class="fas fa-cog"></i>
-                    Iestatījumi
+                <li><a href="logout.php" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Iziet
                 </a></li>
             </ul>
         </nav>
@@ -137,13 +141,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
 
             <!-- Admin Users Section -->
             <div id="admin-users" class="content-section">
-                <h2>Lietotāju pārvaldība</h2>
-                <div class="section-header">
-                    <button class="btn btn-primary" onclick="showAddUserModal()">
-                        <i class="fas fa-plus"></i>
-                        Pievienot lietotāju
-                    </button>
-                </div>
+                <h2>Lietotāji</h2>
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
@@ -335,94 +333,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </div>
             </div>
 
-            <!-- Admin Reports Section -->
-            <div id="admin-reports" class="content-section">
-                <div class="reports-header">
-                    <h2>Atskaites un analīze</h2>
-                    <div class="reports-actions">
-                        <button class="btn btn-secondary" onclick="printReport()">
-                            <i class="fas fa-print"></i> Drukāt
-                        </button>
-                        <button class="btn btn-primary" onclick="exportReport('PDF')">
-                            <i class="fas fa-file-pdf"></i> Eksportēt PDF
-                        </button>
-                    </div>
-            </div>
 
-                <!-- Overview Stats -->
-                <div class="stats-grid reports-stats">
-                    <div class="stat-card">
-                        <i class="fas fa-boxes"></i>
-                        <div class="stat-info">
-                            <h3 id="totalProducts">-</h3>
-                            <p>Kopējie produkti</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div class="stat-info">
-                            <h3 id="totalUsers">-</h3>
-                            <p>Aktīvie lietotāji</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-euro-sign"></i>
-                        <div class="stat-info">
-                            <h3 id="totalValue">€0.00</h3>
-                            <p>Kopējā vērtība</p>
-                        </div>
-                    </div>
-                    <div class="stat-card alert">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <div class="stat-info">
-                            <h3 id="lowStockItems">-</h3>
-                            <p>Zems krājums</p>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
 
             <!-- Admin Settings Section -->
-            <div id="admin-settings" class="content-section">
-                <h2>Iestatījumi</h2>
-                <div class="settings-container">
-                    <div class="setting-group">
-                        <h3>Attēlošanas iestatījumi</h3>
-                        <div class="setting-item">
-                            <label for="theme">Tēma:</label>
-                            <select id="theme" onchange="updateSetting('theme', this.value)">
-                                <option value="light">Gaiša</option>
-                                <option value="dark">Tumša</option>
-                            </select>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label for="itemsPerPage">Ieraksti lapā:</label>
-                            <select id="itemsPerPage" onchange="updateSetting('items_per_page', this.value)">
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="setting-group">
-                        <h3>Paziņojumu iestatījumi</h3>
-                        <div class="setting-item">
-                            <label for="emailNotifications">E-pasta paziņojumi:</label>
-                            <input type="checkbox" id="emailNotifications" onchange="updateSetting('email_notifications', this.checked)">
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label for="lowStockAlert">Zema krājuma brīdinājumi:</label>
-                            <input type="checkbox" id="lowStockAlert" onchange="updateSetting('low_stock_alert', this.checked)">
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </main>
     </div>
 
@@ -465,6 +379,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 <li><a href="#" onclick="showWarehouseSection('tasks')" class="nav-link">
                     <i class="fas fa-tasks"></i>
                     Mani uzdevumi
+                </a></li>
+                <li><a href="#" onclick="showWarehouseSection('reports')" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    Atskaites
                 </a></li>
             </ul>
         </nav>
@@ -609,6 +527,52 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             <div id="warehouse-tasks" class="content-section">
                 <h2>Mani uzdevumi</h2>
                 <p>Šeit tiks attēloti darbinieka uzdevumi...</p>
+            </div>
+
+            <div id="warehouse-reports" class="content-section">
+                <h2>Atskaites un analīze</h2>
+                <div class="reports-header">
+                    <div class="reports-actions">
+                        <button class="btn btn-secondary" onclick="printReport()">
+                            <i class="fas fa-print"></i> Drukāt
+                        </button>
+                        <button class="btn btn-primary" onclick="exportReport('PDF')">
+                            <i class="fas fa-file-pdf"></i> Eksportēt PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Overview Stats -->
+                <div class="stats-grid reports-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-boxes"></i>
+                        <div class="stat-info">
+                            <h3 id="totalProducts">-</h3>
+                            <p>Kopējie produkti</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-truck-loading"></i>
+                        <div class="stat-info">
+                            <h3 id="receivedToday">-</h3>
+                            <p>Pieņemts šodien</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-shipping-fast"></i>
+                        <div class="stat-info">
+                            <h3 id="shippedToday">-</h3>
+                            <p>Nosūtīts šodien</p>
+                        </div>
+                    </div>
+                    <div class="stat-card alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="stat-info">
+                            <h3 id="lowStockItems">-</h3>
+                            <p>Zems krājums</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -862,8 +826,8 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         </main>
     </div>
 
-    <script src="script.js?v=7.0"></script>
-    <script src="inventory.js?v=8.2"></script>
+    <script src="script.js?v=8.0"></script>
+    <script src="inventory.js?v=9.1"></script>
     <script src="shelf-organizer.js?v=7.0"></script>
     <script>
     function showAdminSection(section) {
@@ -1290,7 +1254,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 return response.json();
             })
             .then(products => {
-                console.log('Received products:', products); // Debug log
+                // Products received successfully
                 
                 if (!Array.isArray(products) || products.length === 0) {
                     showNotification('Nav atrastas preces', 'warning');
@@ -1334,14 +1298,14 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
     function initializeWarehouseReceive() {
         const warehouseReceive = document.getElementById('warehouse-receive');
         if (warehouseReceive && warehouseReceive.classList.contains('active')) {
-            console.log('Warehouse receive section is active, generating products...'); // Debug log
+            // Generate products for warehouse receive section
             generateRandomProducts();
         }
     }
     
     // Function to edit a product - moved here to ensure global scope
     function editProduct(productId) {
-        console.log('editProduct called with ID:', productId);
+        // Edit product functionality
         
         // Fetch product data first
         fetch(`get_product.php?id=${productId}`)
@@ -1452,8 +1416,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
     function submitProductForm(event) {
         if (event) event.preventDefault();
         
-        console.log('submitProductForm called');
-        
         // Clear previous error styling
         clearFieldErrors();
         
@@ -1467,12 +1429,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             min_stock_level: document.getElementById('minStock').value
         };
         
-        console.log('Form data being sent:', formData);
-        
         // Client-side validation
         const errors = validateFormData(formData);
         if (errors.length > 0) {
-            console.log('Client-side validation errors:', errors);
             showValidationErrors(errors);
             alert('Lūdzu izlabojiet atzīmētos laukus un mēģiniet vēlreiz');
             return;
@@ -1497,16 +1456,12 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             return response.text();
         })
         .then(text => {
-            console.log('Raw response:', text);
             let data;
             try {
                 data = JSON.parse(text);
             } catch (e) {
-                console.error('JSON parse error:', e);
                 throw new Error('Servera atbilde nav derīgs JSON: ' + text.substring(0, 100));
             }
-            
-            console.log('Parsed response:', data);
             if (data.success) {
                 alert('Produkts veiksmīgi pievienots!');
                 document.getElementById('addProductModal').style.display = 'none';
@@ -1517,10 +1472,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 }
             } else if (data.validation_errors && Array.isArray(data.validation_errors)) {
                 showValidationErrors(data.validation_errors);
-                // Show debug info in console
-                if (data.debug_data) {
-                    console.log('Debug data sent to server:', data.debug_data);
-                }
             } else {
                 alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
             }
@@ -1638,8 +1589,8 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         
         errors.forEach(error => {
             if (typeof error === 'string') {
-                // General error - show in alert for now
-                console.log('General error:', error);
+                // General error - show as alert
+                alert(error);
             } else if (error.field && error.message) {
                 // Show error under specific field
                 const field = document.getElementById(error.field);
@@ -2011,12 +1962,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             role: document.getElementById('role').value
         };
         
-        console.log('User form data being sent:', formData);
-        
         // Client-side validation
         const errors = validateUserData(formData);
         if (errors.length > 0) {
-            console.log('User validation errors:', errors);
             showUserValidationErrors(errors);
             alert('Lūdzu izlabojiet atzīmētos laukus un mēģiniet vēlreiz');
             return;
