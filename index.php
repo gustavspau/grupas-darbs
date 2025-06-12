@@ -776,10 +776,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 <div class="data-entry-simple">
                     <div class="entry-form">
                         <h3>Ievadīt informāciju par plauktu:</h3>
-                        <form class="simple-form">
+                        <form id="shelfDataForm" class="simple-form">
                             <div class="form-group">
-                                <label>Plaukta kods:</label>
-                                <select class="form-control">
+                                <label for="shelfCode">Plaukta kods:</label>
+                                <select id="shelfCode" name="shelf_code" class="form-control">
                                     <option value="">Izvēlieties plauktu</option>
                                     <option value="A1">A1</option>
                                     <option value="A2">A2</option>
@@ -794,25 +794,30 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                                     <option value="C3">C3</option>
                                     <option value="C4">C4</option>
                                 </select>
+                                <div class="error-message" id="shelfCode-error"></div>
             </div>
                             <div class="form-group">
-                                <label>Produktu skaits:</label>
-                                <input type="number" class="form-control" placeholder="Ievadiet produktu skaitu">
+                                <label for="productQuantity">Produktu skaits:</label>
+                                <input type="number" id="productQuantity" name="product_quantity" class="form-control" placeholder="Ievadiet produktu skaitu">
+                                <div class="error-message" id="productQuantity-error"></div>
                             </div>
                             <div class="form-group">
-                                <label>Stāvoklis:</label>
-                                <select class="form-control">
+                                <label for="shelfStatus">Stāvoklis:</label>
+                                <select id="shelfStatus" name="shelf_status" class="form-control">
+                                    <option value="">Izvēlieties stāvokli</option>
                                     <option value="normal">Normāls</option>
-                                    <option value="low">Zems krājums</option>
-                                    <option value="organize">Nepieciešama kārtošana</option>
+                                    <option value="low_stock">Zems krājums</option>
+                                    <option value="needs_organize">Nepieciešama kārtošana</option>
                                     <option value="maintenance">Nepieciešama apkope</option>
                                 </select>
+                                <div class="error-message" id="shelfStatus-error"></div>
                             </div>
                             <div class="form-group">
-                                <label>Komentārs:</label>
-                                <textarea class="form-control" rows="3" placeholder="Papildu informācija..."></textarea>
+                                <label for="shelfComment">Komentārs:</label>
+                                <textarea id="shelfComment" name="shelf_comment" class="form-control" rows="3" placeholder="Papildu informācija..." maxlength="255"></textarea>
+                                <div class="error-message" id="shelfComment-error"></div>
                             </div>
-                            <button type="submit" class="btn btn-success" onclick="event.preventDefault(); alert('Dati saglabāti sistēmā!')">
+                            <button type="submit" class="btn btn-success" onclick="validateShelfForm(event)">
                                 <i class="fas fa-save"></i> Saglabāt
                             </button>
                         </form>

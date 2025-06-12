@@ -45,6 +45,8 @@ CREATE TABLE shelves (
     section VARCHAR(10) NOT NULL, -- A, B, C, D
     max_capacity INT DEFAULT 100,
     status ENUM('normal', 'low_stock', 'needs_organize', 'maintenance') DEFAULT 'normal',
+    comment TEXT,
+    current_product_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

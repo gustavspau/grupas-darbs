@@ -267,8 +267,7 @@ async function moveToInventory(button, productName, uniqueId) {
 
 // Statistics Update
 function updateStats(action) {
-    // This would update the dashboard statistics
-    console.log(`Statistika atjaunināta: ${action}`);
+    // Update the dashboard statistics based on the action
 }
 
 // Real-time Updates Simulation
@@ -734,5 +733,86 @@ async function loadInventoryItems() {
         const row = document.createElement('tr');
         row.innerHTML = `<td colspan="7" class="text-center">Kļūda komunikācijā ar serveri: ${error.message}</td>`;
         inventoryTableBody.appendChild(row);
+    }
+}
+
+// Shelf Data Entry Form Validation
+function validateShelfForm(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const form = document.getElementById('shelfDataForm');
+    const shelfCode = form.elements['shelf_code'].value;
+    const productQuantity = form.elements['product_quantity'].value;
+    const shelfStatus = form.elements['shelf_status'].value;
+    const shelfComment = form.elements['shelf_comment'].value;
+
+    let isValid = true;
+
+    // Clear previous errors
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+    // Validate Shelf Code
+    if (shelfCode === '') {
+        showInlineError(document.getElementById('shelfCode'), 'Lūdzu izvēlieties plauktu.');
+        isValid = false;
+    }
+
+    // Validate Product Quantity
+    const quantityNum = parseInt(productQuantity);
+    if (productQuantity === '' || isNaN(quantityNum) || quantityNum <= 0) {
+        showInlineError(document.getElementById('productQuantity'), 'Lūdzu ievadiet derīgu produktu skaitu (jābūt lielākam par 0).');
+        isValid = false;
+    }
+
+    // Validate Shelf Status
+    if (shelfStatus === '') {
+        showInlineError(document.getElementById('shelfStatus'), 'Lūdzu izvēlieties stāvokli.');
+        isValid = false;
+    }
+
+    // Validate Shelf Comment (optional, but check length if provided)
+    if (shelfComment.length > 255) {
+        showInlineError(document.getElementById('shelfComment'), 'Komentārs nedrīkst pārsniegt 255 rakstzīmes.');
+        isValid = false;
+    }
+
+    if (isValid) {
+        // If validation passes, send data to backend
+        const formData = {
+            shelf_code: shelfCode,
+            product_quantity: quantityNum,
+            shelf_status: shelfStatus,
+            shelf_comment: shelfComment
+        };
+
+        fetch('save_shelf_data.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Dati veiksmīgi saglabāti!', 'success');
+                form.reset(); // Reset form after successful submission
+            } else {
+                showNotification(data.message || 'Kļūda saglabājot datus.', 'error');
+                // Display specific errors if provided by backend
+                if (data.errors) {
+                    for (const field in data.errors) {
+                        const inputElement = document.getElementById(field);
+                        if (inputElement) {
+                            showInlineError(inputElement, data.errors[field]);
+                        }
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Servera kļūda. Lūdzu mēģiniet vēlreiz.', 'error');
+        });
     }
 } 
