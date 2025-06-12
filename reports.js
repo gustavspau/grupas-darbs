@@ -1,15 +1,10 @@
-// Reports functionality
 let currentChart = null;
-
-// Load reports when section is shown
 function loadReports() {
     loadOverviewStats();
     loadProductsByCategory();
     loadLowStockReport();
     loadMonthlyTrends();
 }
-
-// Load overview statistics
 function loadOverviewStats() {
     fetch('get_reports_data.php?type=overview')
         .then(response => response.json())
@@ -18,7 +13,6 @@ function loadOverviewStats() {
                 console.error('Error loading overview stats:', data.error);
                 return;
             }
-            
             document.getElementById('totalProducts').textContent = data.total_products || 0;
             document.getElementById('totalUsers').textContent = data.total_users || 0;
             document.getElementById('totalValue').textContent = `€${parseFloat(data.total_value || 0).toFixed(2)}`;
@@ -26,8 +20,6 @@ function loadOverviewStats() {
         })
         .catch(error => console.error('Error loading overview stats:', error));
 }
-
-// Load products by category chart
 function loadProductsByCategory() {
     fetch('get_reports_data.php?type=products_by_category')
         .then(response => response.json())
@@ -36,15 +28,11 @@ function loadProductsByCategory() {
                 console.error('Error loading category data:', data.error);
                 return;
             }
-            
             const ctx = document.getElementById('categoryChart');
             if (!ctx) return;
-            
-            // Destroy existing chart if it exists
             if (currentChart) {
                 currentChart.destroy();
             }
-            
             currentChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -69,8 +57,6 @@ function loadProductsByCategory() {
         })
         .catch(error => console.error('Error loading category chart:', error));
 }
-
-// Load low stock report
 function loadLowStockReport() {
     fetch('get_reports_data.php?type=low_stock')
         .then(response => response.json())
@@ -79,17 +65,13 @@ function loadLowStockReport() {
                 console.error('Error loading low stock data:', data.error);
                 return;
             }
-            
             const tbody = document.getElementById('lowStockTableBody');
             if (!tbody) return;
-            
             tbody.innerHTML = '';
-            
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nav produktu ar zemu krājumu</td></tr>';
                 return;
             }
-            
             data.forEach(product => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -104,8 +86,6 @@ function loadLowStockReport() {
         })
         .catch(error => console.error('Error loading low stock report:', error));
 }
-
-// Load monthly trends chart
 function loadMonthlyTrends() {
     fetch('get_reports_data.php?type=monthly_trends')
         .then(response => response.json())
@@ -114,10 +94,8 @@ function loadMonthlyTrends() {
                 console.error('Error loading trends data:', data.error);
                 return;
             }
-            
             const ctx = document.getElementById('trendsChart');
             if (!ctx) return;
-            
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -164,13 +142,9 @@ function loadMonthlyTrends() {
         })
         .catch(error => console.error('Error loading trends chart:', error));
 }
-
-// Export report as PDF
 function exportReport(type) {
     alert(`Eksportē ${type} atskaiti... (Funkcionalitāte tiks pievienota)!`);
 }
-
-// Print report
 function printReport() {
     window.print();
-} 
+}

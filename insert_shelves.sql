@@ -10,4 +10,4 @@ INSERT INTO shelves (shelf_code, section, status) VALUES
 ('C1', 'C', 'low_stock'),
 ('C2', 'C', 'normal'),
 ('C3', 'C', 'normal'),
-('C4', 'C', 'needs_organize'); 
+('C4', 'C', 'needs_organize');

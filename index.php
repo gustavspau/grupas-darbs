@@ -1,15 +1,10 @@
 <?php
 require_once 'auth.php';
-
-// Require user to be logged in
 requireLogin();
-
-// Get current user info
 $user = getCurrentUser();
 $userRole = $user['role'];
 $userName = $user['first_name'] . ' ' . $user['last_name'];
 ?>
-
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -17,8 +12,8 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noliktavas Vadības Sistēma</title>
     <link rel="stylesheet" href="styles.css?v=3.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https:
+    <script src="https:
 </head>
 <body>
     <!-- Set initial screen based on user role -->
@@ -26,9 +21,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         const userRole = '<?php echo htmlspecialchars($userRole); ?>';
         const userName = '<?php echo htmlspecialchars($userName); ?>';
     </script>
-    
     <!-- Show appropriate dashboard based on user role -->
-
     <!-- Admin Dashboard -->
     <div id="admin-screen" class="screen<?php echo ($userRole === 'admin') ? ' active' : ''; ?>">
         <header class="main-header">
@@ -46,7 +39,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </a>
             </div>
         </header>
-
         <nav class="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-archive"></i>
@@ -75,7 +67,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </a></li>
             </ul>
         </nav>
-
         <main class="main-content">
             <!-- Admin Dashboard Section -->
             <div id="admin-dashboard" class="content-section active">
@@ -110,7 +101,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
                 </div>
-                
                 <div class="recent-activity">
                     <h3>Pēdējās aktivitātes</h3>
                     <div class="activity-list">
@@ -138,7 +128,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <!-- Admin Users Section -->
             <div id="admin-users" class="content-section">
                 <h2>Lietotāji</h2>
@@ -160,7 +149,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </table>
                 </div>
             </div>
-
             <!-- Add User Modal -->
             <div id="addUserModal" class="modal">
                 <div class="modal-content">
@@ -201,7 +189,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </form>
                 </div>
             </div>
-
             <!-- Admin Inventory Section -->
             <div id="admin-inventory" class="content-section">
                 <h2>Inventāra pārvaldība</h2>
@@ -236,7 +223,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </table>
                 </div>
             </div>
-
             <!-- Add Product Modal -->
             <div id="addProductModal" class="modal">
                 <div class="modal-content">
@@ -332,14 +318,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </form>
                 </div>
             </div>
-
-
-
             <!-- Admin Settings Section -->
-
         </main>
     </div>
-
     <!-- Warehouse Worker Dashboard -->
     <div id="warehouse-screen" class="screen<?php echo ($userRole === 'warehouse') ? ' active' : ''; ?>">
         <header class="main-header">
@@ -357,7 +338,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </a>
             </div>
         </header>
-
         <nav class="sidebar">
             <ul class="nav-menu">
                 <li><a href="#" onclick="showWarehouseSection('dashboard')" class="nav-link active">
@@ -386,7 +366,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </a></li>
             </ul>
         </nav>
-
         <main class="main-content">
             <div id="warehouse-dashboard" class="content-section active">
                 <h2>Noliktavas pārskats</h2>
@@ -420,7 +399,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
                 </div>
-
                 <div class="urgent-tasks">
                     <h3>Steidzamie uzdevumi</h3>
                     <div class="task-list">
@@ -443,7 +421,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <div id="warehouse-receive" class="content-section">
                 <h2>Preču pieņemšana</h2>
                 <div class="receive-container">
@@ -459,7 +436,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <p><i class="fas fa-info-circle"></i> Skenējiet produkta kodu vai ievadiet to manuāli</p>
                         </div>
                     </div>
-
                     <div class="incoming-products">
                         <div class="section-header">
                             <h3>Gaidošās preces</h3>
@@ -472,7 +448,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <!-- Random products will appear here -->
                         </div>
                     </div>
-                    
                     <div class="received-items">
                         <div class="section-header">
                             <h3>Pieņemtās preces</h3>
@@ -487,12 +462,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <div id="warehouse-ship" class="content-section">
                 <h2>Preču nosūtīšana</h2>
                 <p>Šeit tiks attēlota preču nosūtīšanas saskarnes...</p>
             </div>
-
             <div id="warehouse-inventory" class="content-section">
                 <h2>Inventāra uzskaite</h2>
                 <div class="inventory-management">
@@ -502,7 +475,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <i class="fas fa-search"></i>
                         </div>
                     </div>
-                    
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
@@ -523,12 +495,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <div id="warehouse-tasks" class="content-section">
                 <h2>Mani uzdevumi</h2>
                 <p>Šeit tiks attēloti darbinieka uzdevumi...</p>
             </div>
-
             <div id="warehouse-reports" class="content-section">
                 <h2>Atskaites un analīze</h2>
                 <div class="reports-header">
@@ -541,7 +511,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         </button>
                     </div>
                 </div>
-
                 <!-- Overview Stats -->
                 <div class="stats-grid reports-stats">
                     <div class="stat-card">
@@ -576,7 +545,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             </div>
         </main>
     </div>
-
     <!-- Shelf Organizer Dashboard -->
     <div id="shelf-screen" class="screen<?php echo ($userRole === 'shelf') ? ' active' : ''; ?>">
         <header class="main-header">
@@ -594,7 +562,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </a>
             </div>
         </header>
-
         <nav class="sidebar">
             <ul class="nav-menu">
                 <li><a href="#" onclick="showShelfSection('dashboard')" class="nav-link active">
@@ -619,7 +586,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </a></li>
             </ul>
         </nav>
-
         <main class="main-content">
             <div id="shelf-dashboard" class="content-section active">
                 <h2>Plauktu pārskats</h2>
@@ -653,7 +619,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         </div>
                     </div>
                 </div>
-
                 <div class="shelf-map">
                     <h3>Noliktavas karte</h3>
                     <div class="warehouse-grid">
@@ -705,7 +670,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <div id="shelf-inventory" class="content-section">
                 <h2>Preču izvietošana</h2>
                 <div class="shelf-organize-simple">
@@ -718,7 +682,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <li><i class="fas fa-circle"></i> Sakārtot preces pēc kategorijām</li>
                         </ul>
             </div>
-
                     <div class="quick-actions">
                         <h3>Ātras darbības:</h3>
                         <div class="action-buttons">
@@ -735,7 +698,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <div id="shelf-reports" class="content-section">
                 <h2>Atskaišu sagatavošana</h2>
                 <div class="reports-simple">
@@ -770,7 +732,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
             <div id="shelf-data" class="content-section">
                 <h2>Datu ievade sistēmā</h2>
                 <div class="data-entry-simple">
@@ -829,29 +790,17 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     </div>
                 </div>
             </div>
-
-
-
-
         </main>
     </div>
-
     <script src="script.js?v=8.0"></script>
     <script src="inventory.js?v=9.1"></script>
     <script src="shelf-organizer.js?v=7.0"></script>
     <script>
     function showAdminSection(section) {
-        // Hide all sections
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        
-        // Show selected section
         document.getElementById('admin-' + section).classList.add('active');
-        
-        // Update navigation links
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         event.currentTarget.classList.add('active');
-        
-        // Load data based on section
         if (section === 'inventory') {
             loadProducts();
         } else if (section === 'users') {
@@ -860,33 +809,25 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             loadOverviewStats();
         }
     }
-
-    // Function to show the add user modal
     function showAddUserModal() {
         const modal = document.getElementById('addUserModal');
         modal.style.display = 'block';
     }
-
-    // Function to close the user modal
     function closeUserModal() {
         const modal = document.getElementById('addUserModal');
         modal.style.display = 'none';
         document.getElementById('addUserForm').reset();
     }
-
-    // Function to load users
     function loadUsers() {
         fetch('get_users.php')
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.getElementById('usersTableBody');
                 tableBody.innerHTML = '';
-
                 if (data.error) {
                     tableBody.innerHTML = `<tr><td colspan="6" class="text-center">Kļūda: ${data.error}</td></tr>`;
                     return;
                 }
-
                 data.forEach(user => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -909,14 +850,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Kļūda ielādējot lietotājus</td></tr>';
             });
     }
-
-    // Function to edit user
     function editUser(userId, button) {
-        // Get user data from the table row
         const row = button.closest('tr');
         const cells = row.cells;
-        
-        // Create edit modal
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.style.display = 'block';
@@ -954,13 +890,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </form>
             </div>
         `;
-        
         document.body.appendChild(modal);
-        
-        // Add form submit handler
         document.getElementById('editUserForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const formData = {
                 id: document.getElementById('editUserId').value,
                 first_name: document.getElementById('editFirstName').value,
@@ -969,7 +901,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 password: document.getElementById('editPassword').value,
                 role: document.getElementById('editRole').value
             };
-
             fetch('edit_user.php', {
                 method: 'POST',
                 headers: {
@@ -992,16 +923,12 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 alert('Kļūda atjauninot lietotāju');
             });
         });
-
-        // Close modal when clicking outside
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 modal.remove();
             }
         });
     }
-
-    // Function to delete user
     function deleteUser(userId) {
         if (confirm('Vai tiešām vēlaties dzēst šo lietotāju?')) {
             fetch('delete_user.php', {
@@ -1026,11 +953,8 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             });
         }
     }
-
-    // Add event listener for user form submission
     document.getElementById('addUserForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const formData = {
             first_name: document.getElementById('firstName').value,
             last_name: document.getElementById('lastName').value,
@@ -1038,7 +962,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             password: document.getElementById('password').value,
             role: document.getElementById('role').value
         };
-
         fetch('add_user.php', {
             method: 'POST',
             headers: {
@@ -1061,28 +984,20 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             alert('Kļūda pievienojot lietotāju');
         });
     });
-
-    // Close modal when clicking outside
     window.addEventListener('click', function(e) {
         const modal = document.getElementById('addUserModal');
         if (e.target === modal) {
             closeUserModal();
         }
     });
-
-    // Add these new functions for product scanning
     let scannedProducts = new Map();
-
     function scanProduct() {
         const scanInput = document.getElementById('productScan');
         const productCode = scanInput.value.trim();
-        
         if (!productCode) {
             alert('Lūdzu ievadiet produkta kodu');
             return;
         }
-
-        // Simulate product lookup
         fetch(`get_product.php?code=${encodeURIComponent(productCode)}`)
             .then(response => response.json())
             .then(data => {
@@ -1090,7 +1005,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     alert(data.error);
                     return;
                 }
-
                 addProductToList(data);
                 scanInput.value = '';
                 scanInput.focus();
@@ -1100,19 +1014,14 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 alert('Kļūda meklējot produktu');
             });
     }
-
     function addProductToList(product) {
         const itemsList = document.getElementById('receivedItemsList');
-        
-        // Check if product already exists
         if (scannedProducts.has(product.id)) {
             const existingItem = scannedProducts.get(product.id);
             existingItem.quantity++;
             updateProductQuantity(product.id, existingItem.quantity);
             return;
         }
-
-        // Create new item card
         const itemCard = document.createElement('div');
         itemCard.className = 'item-card';
         itemCard.id = `product-${product.id}`;
@@ -1138,45 +1047,33 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </button>
             </div>
         `;
-
         itemsList.insertBefore(itemCard, itemsList.firstChild);
-        
-        // Store product in map
         scannedProducts.set(product.id, {
             product: product,
             quantity: 1,
             confirmed: false
         });
     }
-
     function updateQuantity(productId, change) {
         const item = scannedProducts.get(productId);
         if (!item) return;
-
         const newQuantity = item.quantity + parseInt(change);
         if (newQuantity < 1) return;
-
         item.quantity = newQuantity;
         updateProductQuantity(productId, newQuantity);
     }
-
     function updateProductQuantity(productId, quantity) {
         const itemCard = document.getElementById(`product-${productId}`);
         if (!itemCard) return;
-
         const input = itemCard.querySelector('input[type="number"]');
         input.value = quantity;
     }
-
     function confirmItem(productId) {
         const item = scannedProducts.get(productId);
         if (!item) return;
-
         item.confirmed = true;
         const itemCard = document.getElementById(`product-${productId}`);
         itemCard.classList.add('confirmed');
-        
-        // Disable quantity controls and confirm button
         const controls = itemCard.querySelector('.quantity-control');
         const confirmBtn = itemCard.querySelector('.btn-success');
         controls.style.opacity = '0.5';
@@ -1184,7 +1081,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         confirmBtn.disabled = true;
         confirmBtn.style.opacity = '0.5';
     }
-
     function removeItem(productId) {
         const itemCard = document.getElementById(`product-${productId}`);
         if (itemCard) {
@@ -1192,29 +1088,23 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         }
         scannedProducts.delete(productId);
     }
-
     function confirmAllItems() {
         if (scannedProducts.size === 0) {
             alert('Nav pievienotu produktu');
             return;
         }
-
         if (confirm('Vai vēlaties apstiprināt visas pieņemtās preces?')) {
             scannedProducts.forEach((item, productId) => {
                 confirmItem(productId);
             });
         }
     }
-
-    // Add keyboard event listener for scanning
     document.getElementById('productScan').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             scanProduct();
         }
     });
-
-    // Add these new functions for random product generation
     const productCategories = [
         'Bulkīšu izstrādājumi',
         'Šķidrums',
@@ -1224,24 +1114,20 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         'Sausie augļi un rieksti',
         'Saldumi'
     ];
-
     const productPrefixes = [
         'Premium', 'Classic', 'Organic', 'Fresh', 'Natural',
         'Deluxe', 'Basic', 'Special', 'Extra', 'Super'
     ];
-
     const productTypes = [
         'Milti', 'Ūdens', 'Piens', 'Kartupeļi', 'Rieksti',
         'Sviests', 'Siers', 'Jogurts', 'Āboli', 'Burkāni',
         'Banāni', 'Apelsīni', 'Mandeles', 'Rieksti', 'Šokolāde'
     ];
-
     function generateRandomProduct() {
         const prefix = productPrefixes[Math.floor(Math.random() * productPrefixes.length)];
         const type = productTypes[Math.floor(Math.random() * productTypes.length)];
         const category = productCategories[Math.floor(Math.random() * productCategories.length)];
         const code = `PRD${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-        
         return {
             id: Date.now() + Math.floor(Math.random() * 1000),
             code: code,
@@ -1250,12 +1136,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             barcode: Math.floor(Math.random() * 10000000000000).toString().padStart(13, '0')
         };
     }
-
     function generateRandomProducts() {
         const incomingList = document.getElementById('incomingProductsList');
-        // Clear existing products
         incomingList.innerHTML = '';
-        
         fetch('get_random_products.php')
             .then(response => {
                 if (!response.ok) {
@@ -1264,13 +1147,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 return response.json();
             })
             .then(products => {
-                // Products received successfully
-                
                 if (!Array.isArray(products) || products.length === 0) {
                     showNotification('Nav atrastas preces', 'warning');
                     return;
                 }
-                
                 products.forEach(product => {
                     const productElement = document.createElement('div');
                     productElement.className = 'incoming-product new';
@@ -1282,17 +1162,12 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                             <i class="fas fa-barcode"></i> Skenēt
                         </div>
                     `;
-                    
-                    // Add click handler to simulate scanning
                     productElement.addEventListener('click', () => {
                         document.getElementById('productScan').value = product.code;
                         scanProduct();
                         productElement.remove();
                     });
-                    
                     incomingList.appendChild(productElement);
-                    
-                    // Remove the 'new' class after animation
                     setTimeout(() => {
                         productElement.classList.remove('new');
                     }, 500);
@@ -1303,21 +1178,13 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 showNotification('Kļūda ielādējot preces: ' + error.message, 'error');
             });
     }
-
-    // Initialize products only when warehouse receive section is shown
     function initializeWarehouseReceive() {
         const warehouseReceive = document.getElementById('warehouse-receive');
         if (warehouseReceive && warehouseReceive.classList.contains('active')) {
-            // Generate products for warehouse receive section
             generateRandomProducts();
         }
     }
-    
-    // Function to edit a product - moved here to ensure global scope
     function editProduct(productId) {
-        // Edit product functionality
-        
-        // Fetch product data first
         fetch(`get_product.php?id=${productId}`)
             .then(response => response.json())
             .then(product => {
@@ -1325,8 +1192,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     alert('Kļūda ielādējot produkta datus: ' + product.error);
                     return;
                 }
-                
-                // Create edit modal
                 const modal = document.createElement('div');
                 modal.className = 'modal';
                 modal.style.display = 'block';
@@ -1368,13 +1233,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         </form>
                     </div>
                 `;
-                
                 document.body.appendChild(modal);
-                
-                // Add form submit handler
                 document.getElementById('editProductForm').addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
                     const formData = {
                         id: document.getElementById('editProductId').value,
                         product_code: document.getElementById('editProductCode').value,
@@ -1385,7 +1246,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         unit_price: document.getElementById('editUnitPrice').value,
                         min_stock_level: document.getElementById('editMinStock').value
                     };
-                    
                     fetch('edit_product.php', {
                         method: 'POST',
                         headers: {
@@ -1398,7 +1258,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         if (data.success) {
                             alert('Produkts veiksmīgi atjaunināts!');
                             modal.remove();
-                            loadProducts(); // Reload the products table
+                            loadProducts(); 
         } else {
                             alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
                         }
@@ -1408,8 +1268,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                         alert('Kļūda saglabājot produktu');
                     });
                 });
-                
-                // Close modal when clicking outside
                 modal.addEventListener('click', function(e) {
                     if (e.target === modal) {
                         modal.remove();
@@ -1421,14 +1279,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 alert('Kļūda ielādējot produkta datus');
             });
     }
-
-    // Inline form submission functions that will work regardless of other scripts
     function submitProductForm(event) {
         if (event) event.preventDefault();
-        
-        // Clear previous error styling
         clearFieldErrors();
-        
         const formData = {
             product_code: document.getElementById('productCode').value.trim(),
             product_name: document.getElementById('productName').value.trim(),
@@ -1438,20 +1291,16 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             unit_price: document.getElementById('unitPrice').value,
             min_stock_level: document.getElementById('minStock').value
         };
-        
-        // Client-side validation
         const errors = validateFormData(formData);
         if (errors.length > 0) {
             showValidationErrors(errors);
             alert('Lūdzu izlabojiet atzīmētos laukus un mēģiniet vēlreiz');
             return;
         }
-        
         const submitButton = event.target;
         const originalText = submitButton.textContent;
         submitButton.textContent = 'Saglabā...';
         submitButton.disabled = true;
-        
         fetch('add_product.php', {
             method: 'POST',
             headers: {
@@ -1495,24 +1344,17 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             submitButton.disabled = false;
         });
     }
-    
     function validateFormData(data) {
         const errors = [];
-        
-        // Helper function to check if value is empty
         const isEmpty = (value) => {
             return value === null || value === undefined || 
                    (typeof value === 'string' && value.trim() === '') ||
                    (typeof value === 'number' && isNaN(value));
         };
-        
-        // Valid categories list (must match server-side)
         const validCategories = [
             'Bulkīšu izstrādājumi', 'Šķidrums', 'Piena produkti', 
             'Dārzeņi', 'Augļi', 'Sausie augļi un rieksti', 'Saldumi'
         ];
-        
-        // Product code validation - ALWAYS check regardless of HTML attributes
         if (isEmpty(data.product_code)) {
             errors.push({field: 'productCode', message: 'Produkta kods ir obligāts un nedrīkst būt tukšs'});
         } else {
@@ -1523,8 +1365,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 errors.push({field: 'productCode', message: 'Produkta kods drīkst sākties tikai ar PRD + 3 cipari (piemēram: PRD001)'});
             }
         }
-        
-        // Product name validation - ALWAYS check
         if (isEmpty(data.product_name)) {
             errors.push({field: 'productName', message: 'Produkta nosaukums ir obligāts un nedrīkst būt tukšs'});
         } else {
@@ -1535,15 +1375,11 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 errors.push({field: 'productName', message: 'Produkta nosaukums nedrīkst pārsniegt 50 simbolus'});
             }
         }
-        
-        // Category validation - ALWAYS check
         if (isEmpty(data.category) || data.category === '-- Izvēlieties kategoriju --') {
             errors.push({field: 'productCategory', message: 'Kategorija ir obligāta - lūdzu izvēlieties kategoriju'});
         } else if (!validCategories.includes(data.category)) {
             errors.push({field: 'productCategory', message: 'Izvēlētā kategorija nav derīga'});
         }
-        
-        // Unit price validation - ALWAYS check
         if (isEmpty(data.unit_price)) {
             errors.push({field: 'unitPrice', message: 'Vienības cena ir obligāta un nedrīkst būt tukša'});
         } else {
@@ -1556,8 +1392,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 errors.push({field: 'unitPrice', message: 'Vienības cena nedrīkst pārsniegt 999999.99 EUR'});
             }
         }
-        
-        // Min stock validation - ALWAYS check
         if (isEmpty(data.min_stock_level)) {
             errors.push({field: 'minStock', message: 'Minimālais krājums ir obligāts un nedrīkst būt tukšs'});
         } else {
@@ -1572,41 +1406,30 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 errors.push({field: 'minStock', message: 'Minimālais krājums nedrīkst pārsniegt 999999'});
             }
         }
-        
-        // Barcode validation (optional but if provided must be valid)
         if (data.barcode && data.barcode.trim() !== '') {
             const barcode = data.barcode.trim();
             if (!/^[0-9]{13}$/.test(barcode)) {
                 errors.push({field: 'barcode', message: 'Svītrkods drīkst saturēt tikai 13 ciparus (EAN-13 formāts)'});
             }
         }
-        
-        // Description validation (optional but if provided must be valid)
         if (data.description && data.description.trim() !== '') {
             const desc = data.description.trim();
             if (desc.length > 200) {
                 errors.push({field: 'description', message: 'Apraksts nedrīkst pārsniegt 200 simbolus'});
             }
         }
-        
         return errors;
     }
-    
     function showValidationErrors(errors) {
         clearFieldErrors();
-        
         let hasErrors = false;
-        
         errors.forEach(error => {
             if (typeof error === 'string') {
-                // General error - show as alert
                 alert(error);
             } else if (error.field && error.message) {
-                // Show error under specific field
                 const field = document.getElementById(error.field);
                 const errorDiv = document.getElementById(error.field + '-error');
                 const formGroup = field ? field.closest('.form-group') : null;
-                
                 if (field && errorDiv && formGroup) {
                     formGroup.classList.add('has-error');
                     errorDiv.textContent = error.message;
@@ -1614,23 +1437,19 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 }
             }
         });
-        
         if (hasErrors) {
-            // Scroll to first error
             const firstError = document.querySelector('.form-group.has-error');
             if (firstError) {
                 firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     }
-     
     function clearFieldErrors() {
         const fields = ['productCode', 'productName', 'productCategory', 'barcode', 'description', 'unitPrice', 'minStock'];
         fields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             const errorDiv = document.getElementById(fieldId + '-error');
             const formGroup = field ? field.closest('.form-group') : null;
-            
             if (field && formGroup) {
                 formGroup.classList.remove('has-error', 'has-success');
                 field.style.border = '';
@@ -1641,17 +1460,13 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             }
         });
     }
-     
     function validateFieldRealTime(fieldId) {
         const field = document.getElementById(fieldId);
         const errorDiv = document.getElementById(fieldId + '-error');
         const formGroup = field ? field.closest('.form-group') : null;
-        
         if (!field || !errorDiv || !formGroup) return;
-        
         const value = field.value.trim();
         let error = null;
-        
         switch(fieldId) {
             case 'productCode':
                 if (!value) {
@@ -1662,7 +1477,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     error = 'Produkta kods drīkst sākties tikai ar PRD + 3 cipari (piemēram: PRD001)';
                 }
                 break;
-                
             case 'productName':
                 if (!value) {
                     error = 'Produkta nosaukums ir obligāts';
@@ -1670,25 +1484,21 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     error = 'Produkta nosaukumam jābūt no 2 līdz 50 simboliem';
                 }
                 break;
-                
             case 'productCategory':
                 if (!value) {
                     error = 'Kategorija ir obligāta';
                 }
                 break;
-                
             case 'barcode':
                 if (value && !/^[0-9]{13}$/.test(value)) {
                     error = 'Svītrkods drīkst saturēt tikai 13 ciparus (EAN-13 formāts)';
                 }
                 break;
-                
             case 'description':
                 if (value && value.length > 200) {
                     error = 'Apraksts nedrīkst pārsniegt 200 simbolus';
                 }
                 break;
-                
             case 'unitPrice':
                 if (!value) {
                     error = 'Vienības cena ir obligāta';
@@ -1698,7 +1508,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                     error = 'Vienības cena nedrīkst pārsniegt 999999.99 EUR';
                 }
                 break;
-                
             case 'minStock':
                 if (!value) {
                     error = 'Minimālais krājums ir obligāts';
@@ -1709,7 +1518,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 }
                 break;
         }
-        
         if (error) {
             formGroup.classList.add('has-error');
             formGroup.classList.remove('has-success');
@@ -1720,17 +1528,13 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             errorDiv.textContent = '';
         }
     }
-     
-    // Add real-time validation to form fields
     document.addEventListener('DOMContentLoaded', function() {
         const fields = ['productCode', 'productName', 'productCategory', 'barcode', 'description', 'unitPrice', 'minStock'];
-        
         fields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (field) {
                 field.addEventListener('blur', () => validateFieldRealTime(fieldId));
                 field.addEventListener('input', () => {
-                    // Clear error immediately when user starts typing
                     const errorDiv = document.getElementById(fieldId + '-error');
                     const formGroup = field.closest('.form-group');
                     if (formGroup && formGroup.classList.contains('has-error')) {
@@ -1739,43 +1543,28 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 });
             }
         });
-        
-        // Special handling for product code - auto uppercase and PRD prefix
         const productCodeField = document.getElementById('productCode');
         if (productCodeField) {
             productCodeField.addEventListener('input', function(e) {
                 let value = e.target.value.toUpperCase();
-                
-                // If user starts typing numbers, auto-add PRD prefix
                 if (/^[0-9]/.test(value)) {
                     value = 'PRD' + value;
                 }
-                
-                // Ensure it starts with PRD
                 if (value && !value.startsWith('PRD')) {
-                    // If user types something else, try to fix it
                     if (/^[A-Z]{1,3}[0-9]*$/.test(value)) {
-                        // Replace first letters with PRD
                         value = 'PRD' + value.replace(/^[A-Z]+/, '');
                     }
                 }
-                
-                // Limit to 6 characters total
                 if (value.length > 6) {
                     value = value.slice(0, 6);
                 }
-                
-                // Ensure PRD + only numbers after
                 if (value.length > 3) {
                     const prdPart = value.slice(0, 3);
                     const numberPart = value.slice(3).replace(/[^0-9]/g, '');
                     value = prdPart + numberPart;
                 }
-                
                 e.target.value = value;
             });
-            
-            // Auto-focus to end and add PRD if empty on focus
             productCodeField.addEventListener('focus', function(e) {
                 if (!e.target.value) {
                     e.target.value = 'PRD';
@@ -1785,8 +1574,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 }
             });
         }
-        
-        // Special handling for barcode - only numbers
         const barcodeField = document.getElementById('barcode');
         if (barcodeField) {
             barcodeField.addEventListener('input', function(e) {
@@ -1797,19 +1584,13 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             });
         }
     });
-
-    // Comprehensive user validation function (Gmail-level)
     function validateUserData(data) {
         const errors = [];
-        
-        // Helper function to check if value is empty
         const isEmpty = (value) => {
             return value === null || value === undefined || 
                    (typeof value === 'string' && value.trim() === '') ||
                    (typeof value === 'number' && isNaN(value));
         };
-        
-        // First name validation
         if (isEmpty(data.first_name)) {
             errors.push({field: 'firstName', message: 'Vārds ir obligāts un nedrīkst būt tukšs'});
         } else {
@@ -1824,8 +1605,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 errors.push({field: 'firstName', message: 'Vārds nedrīkst sākties vai beigties ar atstarpi'});
             }
         }
-        
-        // Last name validation
         if (isEmpty(data.last_name)) {
             errors.push({field: 'lastName', message: 'Uzvārds ir obligāts un nedrīkst būt tukšs'});
         } else {
@@ -1840,15 +1619,11 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 errors.push({field: 'lastName', message: 'Uzvārds nedrīkst sākties vai beigties ar atstarpi'});
             }
         }
-        
-        // Email validation (Gmail-level)
         if (isEmpty(data.email)) {
             errors.push({field: 'email', message: 'E-pasta adrese ir obligāta'});
         } else {
             const email = data.email.trim().toLowerCase();
-            // RFC 5322 compliant email regex
             const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-            
             if (email.length > 254) {
                 errors.push({field: 'email', message: 'E-pasta adrese pārāk gara (maksimums 254 simboli)'});
             } else if (!emailRegex.test(email)) {
@@ -1858,15 +1633,12 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             } else if (email.startsWith('.') || email.includes('@.') || email.includes('.@')) {
                 errors.push({field: 'email', message: 'Nederīgs e-pasta formāts'});
             } else {
-                // Check for suspicious patterns
                 const localPart = email.split('@')[0];
                 if (localPart.length > 64) {
                     errors.push({field: 'email', message: 'E-pasta vārds pārāk garš (maksimums 64 simboli)'});
                 }
             }
         }
-        
-        // Password validation (secure)
         if (isEmpty(data.password)) {
             errors.push({field: 'password', message: 'Parole ir obligāta'});
         } else {
@@ -1889,38 +1661,29 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 if (!/[^a-zA-Z0-9]/.test(password)) {
                     strengthErrors.push('speciālo simbolu');
                 }
-                
                 if (strengthErrors.length > 0) {
                     errors.push({field: 'password', message: `Parolei jāsatur: ${strengthErrors.join(', ')}`});
                 }
-                
-                // Check for common weak passwords
                 const commonPasswords = ['password', '123456', 'qwerty', 'admin', 'letmein'];
                 if (commonPasswords.includes(password.toLowerCase())) {
                     errors.push({field: 'password', message: 'Parole pārāk vienkārša - izvēlieties sarežģītāku'});
                 }
             }
         }
-        
-        // Role validation
         const validRoles = ['admin', 'warehouse', 'shelf'];
         if (isEmpty(data.role)) {
             errors.push({field: 'role', message: 'Loma ir obligāta'});
         } else if (!validRoles.includes(data.role)) {
             errors.push({field: 'role', message: 'Izvēlētā loma nav derīga'});
         }
-        
         return errors;
     }
-    
-    // User validation error display functions
     function clearUserFieldErrors() {
         const errorFields = ['firstName', 'lastName', 'email', 'password', 'role'];
         errorFields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             const errorDiv = document.getElementById(fieldId + '-error');
             const formGroup = field ? field.closest('.form-group') : null;
-            
             if (formGroup) {
                 formGroup.classList.remove('has-error', 'has-success');
             }
@@ -1929,18 +1692,14 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             }
         });
     }
-    
     function showUserValidationErrors(errors) {
         clearUserFieldErrors();
-        
         let hasErrors = false;
-        
         errors.forEach(error => {
             if (error.field && error.message) {
                 const field = document.getElementById(error.field);
                 const errorDiv = document.getElementById(error.field + '-error');
                 const formGroup = field ? field.closest('.form-group') : null;
-                
                 if (field && errorDiv && formGroup) {
                     formGroup.classList.add('has-error');
                     errorDiv.textContent = error.message;
@@ -1948,8 +1707,6 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 }
             }
         });
-        
-        // Scroll to first error
         if (hasErrors) {
             const firstErrorField = document.querySelector('.form-group.has-error');
             if (firstErrorField) {
@@ -1957,13 +1714,9 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             }
         }
     }
-
     function submitUserForm(event) {
         if (event) event.preventDefault();
-        
-        // Clear previous errors
         clearUserFieldErrors();
-        
         const formData = {
             first_name: document.getElementById('firstName').value.trim(),
             last_name: document.getElementById('lastName').value.trim(),
@@ -1971,20 +1724,16 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             password: document.getElementById('password').value,
             role: document.getElementById('role').value
         };
-        
-        // Client-side validation
         const errors = validateUserData(formData);
         if (errors.length > 0) {
             showUserValidationErrors(errors);
             alert('Lūdzu izlabojiet atzīmētos laukus un mēģiniet vēlreiz');
             return;
         }
-        
         const submitButton = event.target;
         const originalText = submitButton.textContent;
         submitButton.textContent = 'Saglabā...';
         submitButton.disabled = true;
-        
         fetch('add_user.php', {
             method: 'POST',
             headers: {
@@ -2015,9 +1764,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         });
     }
     </script>
-
     <style>
-        /* Add these styles to your existing CSS */
         .incoming-products {
             background: white;
             padding: 2rem;
@@ -2025,14 +1772,12 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
-
         .incoming-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
-
         .incoming-product {
             background: #f8f9fa;
             border: 1px solid #ddd;
@@ -2043,12 +1788,10 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             position: relative;
             overflow: hidden;
         }
-
         .incoming-product:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-
         .incoming-product::before {
             content: '';
             position: absolute;
@@ -2058,23 +1801,19 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             height: 100%;
             background: #667eea;
         }
-
         .incoming-product .product-code {
             font-size: 0.9rem;
             color: #666;
             margin-bottom: 0.5rem;
         }
-
         .incoming-product .product-name {
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
-
         .incoming-product .product-category {
             font-size: 0.8rem;
             color: #888;
         }
-
         .incoming-product .scan-hint {
             position: absolute;
             bottom: 0.5rem;
@@ -2082,37 +1821,29 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             color: #667eea;
             font-size: 0.8rem;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         .incoming-product.new {
             animation: fadeIn 0.5s ease-out;
         }
-
-        /* Reports Styles */
         .reports-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
         }
-
         .reports-actions {
             display: flex;
             gap: 1rem;
         }
-
         .reports-stats {
             margin-bottom: 2rem;
         }
-
         .stat-card.alert {
             background: linear-gradient(135deg, #f5576c, #f093fb);
         }
-
         .simple-section {
             background: white;
             border-radius: 15px;
@@ -2120,13 +1851,11 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
         }
-
         .simple-section h3 {
             margin: 0 0 2rem 0;
             color: #333;
             font-size: 1.2rem;
         }
-
         .category-placeholder {
             display: flex;
             flex-direction: column;
@@ -2137,30 +1866,25 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             border-radius: 10px;
             border: 2px dashed #dee2e6;
         }
-
         .placeholder-icon {
             font-size: 3rem;
             color: #6c757d;
             margin-bottom: 1rem;
         }
-
         .category-placeholder p {
             color: #6c757d;
             margin: 0;
             font-style: italic;
         }
-
         .report-card {
             background: white;
             border-radius: 15px;
             padding: 1.5rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
-
         .report-card.full-width {
             grid-column: 1 / -1;
         }
-
         .report-header {
             display: flex;
             justify-content: space-between;
@@ -2169,29 +1893,24 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             padding-bottom: 0.5rem;
             border-bottom: 1px solid #e9ecef;
         }
-
         .report-header h3 {
             margin: 0;
             color: #333;
             font-size: 1.1rem;
         }
-
         .report-actions {
             display: flex;
             gap: 0.5rem;
         }
-
         .chart-container {
             position: relative;
             height: 300px;
         }
-
         .quick-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
-
         .action-btn {
             display: flex;
             flex-direction: column;
@@ -2205,63 +1924,50 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             text-decoration: none;
             color: #666;
         }
-
         .action-btn:hover {
             border-color: #667eea;
             color: #667eea;
             transform: translateY(-2px);
         }
-
         .action-btn i {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
-
         .action-btn span {
             font-size: 0.9rem;
             text-align: center;
         }
-
         .filter-form {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-
         .form-control {
             padding: 0.5rem;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 0.9rem;
         }
-
         .btn-secondary {
             background: #6c757d;
             color: white;
         }
-
         .btn-secondary:hover {
             background: #5a6268;
         }
-
         .btn-warning {
             background: #ffc107;
             color: #212529;
         }
-
         .btn-warning:hover {
             background: #e0a800;
         }
-
         .text-center {
             text-align: center;
         }
-
         .text-right {
             text-align: right;
         }
-
-        /* Error message styling */
         .error-message {
             color: #dc3545;
             font-size: 0.875rem;
@@ -2269,25 +1975,21 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             min-height: 1.2rem;
             display: block;
         }
-
         .form-group.has-error input,
         .form-group.has-error select,
         .form-group.has-error textarea {
             border: 2px solid #dc3545;
             background-color: #fff5f5;
         }
-
         .form-group.has-error label {
             color: #dc3545;
         }
-
         .form-group.has-success input,
         .form-group.has-success select,
         .form-group.has-success textarea {
             border: 2px solid #28a745;
             background-color: #f8fff9;
         }
-
         .validation-summary {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
@@ -2296,58 +1998,46 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             border-radius: 0.375rem;
             margin-bottom: 1rem;
         }
-
         .validation-summary h4 {
             margin: 0 0 0.5rem 0;
             font-size: 1rem;
         }
-
         .validation-summary ul {
             margin: 0;
             padding-left: 1.5rem;
         }
-
         .validation-summary li {
             margin-bottom: 0.25rem;
         }
-
                  @media (max-width: 768px) {
              .reports-grid {
                  grid-template-columns: 1fr;
              }
-             
              .quick-actions {
                  grid-template-columns: 1fr;
              }
-             
              .reports-header {
                  flex-direction: column;
                  gap: 1rem;
                  align-items: stretch;
              }
          }
-
-         /* Print Styles */
          @media print {
              .sidebar, .header-right, .reports-actions {
                  display: none !important;
              }
-             
              .main-content {
                  margin-left: 0 !important;
                  padding: 20px !important;
              }
-             
              .reports-header h2 {
                  text-align: center;
                  margin-bottom: 30px;
              }
-             
              .stats-grid {
                  grid-template-columns: repeat(4, 1fr) !important;
                  gap: 15px !important;
              }
-             
              .stat-card {
                  break-inside: avoid;
                  box-shadow: none !important;
@@ -2356,4 +2046,4 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         }
     </style>
 </body>
-</html> 
+</html>

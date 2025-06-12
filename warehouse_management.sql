@@ -1,15 +1,5 @@
--- ========================================
--- WAREHOUSE MANAGEMENT DATABASE
--- Noliktavas vadības datubāze
--- ========================================
-
--- Izveidojam datubāzi
 CREATE DATABASE IF NOT EXISTS warehouse_management CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE warehouse_management;
-
--- ========================================
--- 1. LIETOTĀJU TABULA (Users Table)
--- ========================================
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -21,10 +11,6 @@ CREATE TABLE users (
     status ENUM('active', 'inactive') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- ========================================
--- 2. PRODUKTU TABULA (Products Table)
--- ========================================
 CREATE TABLE products (
     id INT PRIMARY KEY AUTO_INCREMENT,
     product_code VARCHAR(50) UNIQUE NOT NULL,
@@ -35,24 +21,16 @@ CREATE TABLE products (
     min_stock_level INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- ========================================
--- 3. PLAUKTU TABULA (Shelves Table)
--- ========================================
 CREATE TABLE shelves (
     id INT PRIMARY KEY AUTO_INCREMENT,
     shelf_code VARCHAR(20) UNIQUE NOT NULL,
-    section VARCHAR(10) NOT NULL, -- A, B, C, D
+    section VARCHAR(10) NOT NULL, 
     max_capacity INT DEFAULT 100,
     status ENUM('normal', 'low_stock', 'needs_organize', 'maintenance') DEFAULT 'normal',
     comment TEXT,
     current_product_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- ========================================
--- 4. INVENTĀRA TABULA (Inventory Table)
--- ========================================
 CREATE TABLE inventory (
     id INT PRIMARY KEY AUTO_INCREMENT,
     product_id INT NOT NULL,
@@ -63,10 +41,6 @@ CREATE TABLE inventory (
     FOREIGN KEY (shelf_id) REFERENCES shelves(id) ON DELETE CASCADE,
     UNIQUE KEY unique_product_shelf (product_id, shelf_id)
 );
-
--- ========================================
--- 5. PASŪTĪJUMU TABULA (Orders Table)
--- ========================================
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT,
     order_number VARCHAR(50) UNIQUE NOT NULL,
@@ -79,10 +53,6 @@ CREATE TABLE orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (assigned_user_id) REFERENCES users(id) ON DELETE SET NULL
 );
-
--- ========================================
--- 6. UZDEVUMU TABULA (Tasks Table)
--- ========================================
 CREATE TABLE tasks (
     id INT PRIMARY KEY AUTO_INCREMENT,
     task_title VARCHAR(255) NOT NULL,
@@ -95,10 +65,6 @@ CREATE TABLE tasks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (assigned_user_id) REFERENCES users(id) ON DELETE SET NULL
 );
-
--- ========================================
--- 7. Iestatījumu TABULA (Settings Table)
--- ========================================
 CREATE TABLE IF NOT EXISTS settings (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -109,8 +75,3 @@ CREATE TABLE IF NOT EXISTS settings (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_setting (user_id, setting_key)
 );
-
--- ========================================
--- DATABASE READY!
--- Datubāze ir gatava!
--- ======================================== 

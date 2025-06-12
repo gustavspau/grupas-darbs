@@ -1,22 +1,14 @@
 <?php
 require_once 'auth.php';
 require_once 'config.php';
-
-// Only allow admin users to add new users
 if (!isAdmin()) {
     http_response_code(403);
     echo json_encode(['error' => 'Nav atļauts pievienot lietotājus']);
     exit;
 }
-
-// Get POST data
-$data = json_decode(file_get_contents('php://input'), true);
-
-// Comprehensive user validation function
+$data = json_decode(file_get_contents('php:
 function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
     $errors = [];
-    
-    // Required fields validation with proper field mapping
     $required_field_mapping = [
         'first_name' => ['field' => 'firstName', 'message' => 'Vārds ir obligāts'],
         'last_name' => ['field' => 'lastName', 'message' => 'Uzvārds ir obligāts'],
@@ -24,19 +16,14 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
         'password' => ['field' => 'password', 'message' => 'Parole ir obligāta'],
         'role' => ['field' => 'role', 'message' => 'Loma ir obligāta']
     ];
-    
     foreach ($required_field_mapping as $field => $error_info) {
         if (!isset($data[$field]) || trim($data[$field]) === '') {
             $errors[] = $error_info;
         }
     }
-    
-    // Return early if required fields are missing
     if (!empty($errors)) {
         return $errors;
     }
-    
-    // First name validation
     $first_name = trim($data['first_name']);
     if (strlen($first_name) < 2) {
         $errors[] = ['field' => 'firstName', 'message' => 'Vārdam jābūt vismaz 2 simboliem'];
@@ -47,8 +34,6 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
     } elseif (preg_match('/^\s|\s$/', $first_name)) {
         $errors[] = ['field' => 'firstName', 'message' => 'Vārds nedrīkst sākties vai beigties ar atstarpi'];
     }
-    
-    // Last name validation
     $last_name = trim($data['last_name']);
     if (strlen($last_name) < 2) {
         $errors[] = ['field' => 'lastName', 'message' => 'Uzvārdam jābūt vismaz 2 simboliem'];
@@ -59,15 +44,11 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
     } elseif (preg_match('/^\s|\s$/', $last_name)) {
         $errors[] = ['field' => 'lastName', 'message' => 'Uzvārds nedrīkst sākties vai beigties ar atstarpi'];
     }
-    
-    // Email validation (Gmail-level)
     $email = trim(strtolower($data['email']));
     if (strlen($email) > 254) {
         $errors[] = ['field' => 'email', 'message' => 'E-pasta adrese pārāk gara (maksimums 254 simboli)'];
     } else {
-        // RFC 5322 compliant email regex
         $emailRegex = '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/';
-        
         if (!preg_match($emailRegex, $email)) {
             $errors[] = ['field' => 'email', 'message' => 'Nederīgs e-pasta formāts'];
         } elseif (strpos($email, '..') !== false) {
@@ -75,15 +56,12 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
         } elseif (strpos($email, '@.') !== false || strpos($email, '.@') !== false || strpos($email, '.') === 0) {
             $errors[] = ['field' => 'email', 'message' => 'Nederīgs e-pasta formāts'];
         } else {
-            // Check for suspicious patterns
             $localPart = explode('@', $email)[0];
             if (strlen($localPart) > 64) {
                 $errors[] = ['field' => 'email', 'message' => 'E-pasta vārds pārāk garš (maksimums 64 simboli)'];
             }
         }
     }
-    
-    // Password validation (required for creating users)
     $password = $data['password'];
     if (strlen($password) < 8) {
         $errors[] = ['field' => 'password', 'message' => 'Parolei jābūt vismaz 8 simboliem'];
@@ -103,25 +81,18 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
         if (!preg_match('/[^a-zA-Z0-9]/', $password)) {
             $strengthErrors[] = 'speciālo simbolu';
         }
-        
         if (!empty($strengthErrors)) {
             $errors[] = ['field' => 'password', 'message' => 'Parolei jāsatur: ' . implode(', ', $strengthErrors)];
         }
-        
-        // Check for common weak passwords
         $commonPasswords = ['password', '123456', 'qwerty', 'admin', 'letmein'];
         if (in_array(strtolower($password), $commonPasswords)) {
             $errors[] = ['field' => 'password', 'message' => 'Parole pārāk vienkārša - izvēlieties sarežģītāku'];
         }
     }
-    
-    // Role validation
     $validRoles = ['admin', 'warehouse', 'shelf'];
     if (!in_array($data['role'], $validRoles)) {
         $errors[] = ['field' => 'role', 'message' => 'Izvēlētā loma nav derīga'];
     }
-    
-    // Check email uniqueness
     try {
         if ($isEdit) {
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
@@ -130,7 +101,6 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$email]);
         }
-        
         if ($stmt->rowCount() > 0) {
             $errors[] = ['field' => 'email', 'message' => 'Šāds e-pasts jau eksistē sistēmā'];
         }
@@ -138,18 +108,12 @@ function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
         error_log("Database error checking email uniqueness: " . $e->getMessage());
         $errors[] = 'Kļūda pārbaudot e-pasta unikalitāti';
     }
-    
     return $errors;
 }
-
-// Validate the input data
 $validation_errors = validateUserData($data, $pdo);
-
 if (!empty($validation_errors)) {
-    // Filter out non-array errors (general errors) and field-specific errors
     $field_errors = [];
     $general_errors = [];
-    
     foreach ($validation_errors as $error) {
         if (is_array($error) && isset($error['field']) && isset($error['message'])) {
             $field_errors[] = $error;
@@ -157,7 +121,6 @@ if (!empty($validation_errors)) {
             $general_errors[] = (string)$error;
         }
     }
-    
     http_response_code(422);
     echo json_encode([
         'error' => 'Validācijas kļūdas',
@@ -166,21 +129,13 @@ if (!empty($validation_errors)) {
     ]);
     exit;
 }
-
 try {
-    // Sanitize data
     $first_name = trim($data['first_name']);
     $last_name = trim($data['last_name']);
     $email = trim(strtolower($data['email']));
     $role = $data['role'];
-
-    // Hash the password
     $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
-
-    // Generate username from email (before @ symbol)
     $username = explode('@', $email)[0];
-    
-    // Make sure username is unique by adding number if needed
     $base_username = $username;
     $counter = 1;
     while (true) {
@@ -192,13 +147,10 @@ try {
         $username = $base_username . $counter;
         $counter++;
     }
-
-    // Insert new user
     $stmt = $pdo->prepare("
         INSERT INTO users (username, first_name, last_name, email, password, role, created_at)
         VALUES (?, ?, ?, ?, ?, ?, NOW())
     ");
-
     $stmt->execute([
         $username,
         $first_name,
@@ -207,11 +159,7 @@ try {
         $hashed_password,
         $role
     ]);
-
-    // Get the new user's ID
     $user_id = $pdo->lastInsertId();
-
-    // Return success response with the new user's data
     echo json_encode([
         'success' => true,
         'message' => 'Lietotājs veiksmīgi pievienots',
@@ -224,10 +172,9 @@ try {
             'role' => $role
         ]
     ]);
-
 } catch (PDOException $e) {
     error_log("Database error in add_user.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Sistēmas kļūda. Lūdzu mēģiniet vēlāk.']);
 }
-?> 
+?>

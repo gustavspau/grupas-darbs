@@ -1,8 +1,6 @@
 <?php
 require_once 'config.php';
 require_once 'auth.php';
-
-// Test users to create
 $testUsers = [
     [
         'username' => 'admin',
@@ -29,27 +27,19 @@ $testUsers = [
         'role' => 'shelf'
     ]
 ];
-
 try {
     foreach ($testUsers as $userData) {
-        // Check if user already exists
         $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ?");
         $stmt->execute([$userData['username']]);
-        
         if ($stmt->fetch()) {
             echo "User '{$userData['username']}' already exists.<br>";
             continue;
         }
-        
-        // Hash password
         $hashedPassword = hashPassword($userData['password']);
-        
-        // Insert user
         $stmt = $pdo->prepare("
             INSERT INTO users (username, password, first_name, last_name, email, role) 
             VALUES (?, ?, ?, ?, ?, ?)
         ");
-        
         $stmt->execute([
             $userData['username'],
             $hashedPassword,
@@ -58,17 +48,14 @@ try {
             $userData['email'],
             $userData['role']
         ]);
-        
         echo "Created user: {$userData['username']} ({$userData['role']})<br>";
     }
-    
     echo "<br><strong>Test users created successfully!</strong><br>";
     echo "<br>You can now login with:<br>";
     echo "- Username: admin, Password: password (Administrator)<br>";
     echo "- Username: janis.berzins, Password: password (Warehouse Worker)<br>";
     echo "- Username: anna.ozolina, Password: password (Shelf Organizer)<br>";
-    
 } catch(PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
-?> 
+?>

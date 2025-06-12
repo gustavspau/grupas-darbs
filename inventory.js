@@ -1,4 +1,3 @@
-// Function to load products from the database
 function loadProducts() {
     fetch('get_products.php')
         .then(response => {
@@ -12,25 +11,19 @@ function loadProducts() {
             if (!tableBody) {
                 return;
             }
-            
             tableBody.innerHTML = '';
-
             if (data.error) {
                 tableBody.innerHTML = `<tr><td colspan="8" class="text-center">Kļūda: ${data.error}</td></tr>`;
                 return;
             }
-
             const products = data.products || [];
-            
             if (products.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = '<td colspan="8" class="text-center">Nav atrasts neviens produkts</td>';
                 tableBody.appendChild(row);
                 return;
             }
-
             products.forEach(product => {
-                // Process each product
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${product.product_code || ''}</td>
@@ -55,12 +48,9 @@ function loadProducts() {
             }
         });
 }
-
-// Validation functions
 function validateProductCode(code) {
     const errors = [];
     const trimmedCode = code.trim();
-    
     if (!trimmedCode) {
         errors.push('Produkta kods ir obligāts');
     } else if (trimmedCode.length < 3 || trimmedCode.length > 20) {
@@ -68,14 +58,11 @@ function validateProductCode(code) {
     } else if (!/^[A-Z0-9_-]+$/i.test(trimmedCode)) {
         errors.push('Produkta kods drīkst saturēt tikai burtus, ciparus, zemsvītras un domuzīmes');
     }
-    
     return errors;
 }
-
 function validateProductName(name) {
     const errors = [];
     const trimmedName = name.trim();
-    
     if (!trimmedName) {
         errors.push('Produkta nosaukums ir obligāts');
     } else if (trimmedName.length < 2 || trimmedName.length > 100) {
@@ -83,39 +70,30 @@ function validateProductName(name) {
     } else if (!/^[\p{L}\p{N}\s\-\.,&()]+$/u.test(trimmedName)) {
         errors.push('Produkta nosaukums satur neatļautus simbolus');
     }
-    
     return errors;
 }
-
 function validateCategory(category) {
     const errors = [];
     const trimmedCategory = category.trim();
-    
     if (!trimmedCategory) {
         errors.push('Kategorija ir obligāta');
     } else if (trimmedCategory.length < 2 || trimmedCategory.length > 50) {
         errors.push('Kategorijas nosaukumam jābūt no 2 līdz 50 simboliem');
     }
-    
     return errors;
 }
-
 function validateBarcode(barcode) {
     const errors = [];
-    
     if (barcode && barcode.trim()) {
         const trimmedBarcode = barcode.trim();
         if (!/^[0-9]{8,13}$/.test(trimmedBarcode)) {
             errors.push('Svītrkods drīkst saturēt tikai ciparus un būt 8-13 simbolu garš');
         }
     }
-    
     return errors;
 }
-
 function validateUnitPrice(price) {
     const errors = [];
-    
     if (!price || price === '') {
         errors.push('Vienības cena ir obligāta');
     } else {
@@ -126,13 +104,10 @@ function validateUnitPrice(price) {
             errors.push('Vienības cena nedrīkst pārsniegt 999999.99 EUR');
         }
     }
-    
     return errors;
 }
-
 function validateMinStock(stock) {
     const errors = [];
-    
     if (!stock || stock === '') {
         errors.push('Minimālais krājuma līmenis ir obligāts');
     } else {
@@ -143,23 +118,17 @@ function validateMinStock(stock) {
             errors.push('Minimālais krājuma līmenis nedrīkst pārsniegt 999999');
         }
     }
-    
     return errors;
 }
-
 function validateDescription(description) {
     const errors = [];
-    
     if (description && description.trim().length > 500) {
         errors.push('Apraksts nedrīkst pārsniegt 500 simbolus');
     }
-    
     return errors;
 }
-
 function validateProductForm(formData) {
     const allErrors = [];
-    
     allErrors.push(...validateProductCode(formData.product_code));
     allErrors.push(...validateProductName(formData.product_name));
     allErrors.push(...validateCategory(formData.category));
@@ -167,14 +136,10 @@ function validateProductForm(formData) {
     allErrors.push(...validateUnitPrice(formData.unit_price));
     allErrors.push(...validateMinStock(formData.min_stock_level));
     allErrors.push(...validateDescription(formData.description));
-    
     return allErrors;
 }
-
 function displayValidationErrors(errors) {
-    // Remove existing error displays
     document.querySelectorAll('.validation-error').forEach(el => el.remove());
-    
     if (errors.length > 0) {
         const errorContainer = document.createElement('div');
         errorContainer.className = 'validation-error';
@@ -187,75 +152,49 @@ function displayValidationErrors(errors) {
             margin-bottom: 15px;
             font-size: 14px;
         `;
-        
         const errorList = document.createElement('ul');
         errorList.style.cssText = 'margin: 0; padding-left: 20px;';
-        
         errors.forEach(error => {
             const listItem = document.createElement('li');
             listItem.textContent = error;
             errorList.appendChild(listItem);
         });
-        
         errorContainer.appendChild(errorList);
-        
-        // Insert at the beginning of the modal content
         const modalContent = document.querySelector('.modal-content');
         if (modalContent) {
             modalContent.insertBefore(errorContainer, modalContent.children[1]);
         }
     }
 }
-
-// Function to show the add product modal
 function showAddProductModal() {
     const modal = document.getElementById('addProductModal');
     modal.style.display = 'block';
 }
-
-// Function to close the modal
 function closeModal() {
     const modal = document.getElementById('addProductModal');
     modal.style.display = 'none';
-    // Remove validation errors when closing
     document.querySelectorAll('.validation-error').forEach(el => el.remove());
 }
-
-// Function to handle product search
 function searchProducts() {
     const searchInput = document.getElementById('productSearch');
     const searchTerm = searchInput.value.toLowerCase();
     const rows = document.querySelectorAll('#productsTableBody tr');
-
     rows.forEach(row => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(searchTerm) ? '' : 'none';
     });
 }
-
-// Add event listeners when the document is loaded
 document.addEventListener('DOMContentLoaded', function() {
-            // DOM content loaded
-    
-    // Load products when the page loads
     loadProducts();
-
-    // Add event listener for search input
     const searchInput = document.getElementById('productSearch');
     if (searchInput) {
         searchInput.addEventListener('input', searchProducts);
     }
-
-    // Add event listener for modal close button
     const closeButton = document.querySelector('.close');
     if (closeButton) {
         closeButton.addEventListener('click', closeModal);
     }
-
-    // Add event listener for add product form submission
     setupAddProductForm();
-
-    // Close modal when clicking outside
     window.addEventListener('click', function(e) {
         const modal = document.getElementById('addProductModal');
         if (e.target === modal) {
@@ -263,26 +202,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-// Global functions for form handling
 function setupAddProductForm() {
     const addProductForm = document.getElementById('addProductForm');
-            // Add product form setup
     if (addProductForm) {
-        // Remove any existing listeners
         addProductForm.removeEventListener('submit', handleAddProductSubmit);
-        // Add the submit listener
         addProductForm.addEventListener('submit', handleAddProductSubmit);
     } else {
-        // If form not found, try again after a short delay
         setTimeout(setupAddProductForm, 100);
     }
 }
-
 function handleAddProductSubmit(e) {
     e.preventDefault();
-    // Form submitted
-    
     const formData = {
         product_code: document.getElementById('productCode').value,
         product_name: document.getElementById('productName').value,
@@ -292,23 +222,15 @@ function handleAddProductSubmit(e) {
         unit_price: document.getElementById('unitPrice').value,
         min_stock_level: document.getElementById('minStock').value
     };
-
-    // Validate form data
-
-    // Validate form data
     const validationErrors = validateProductForm(formData);
-    
     if (validationErrors.length > 0) {
         displayValidationErrors(validationErrors);
         return;
     }
-
-    // Show loading state
     const submitButton = document.querySelector('#addProductForm button[type="submit"]');
     const originalText = submitButton.textContent;
     submitButton.textContent = 'Saglabā...';
     submitButton.disabled = true;
-
     fetch('add_product.php', {
         method: 'POST',
         headers: {
@@ -318,7 +240,6 @@ function handleAddProductSubmit(e) {
     })
     .then(response => response.json())
     .then(data => {
-                    // Handle response
         if (data.success) {
             if (typeof showNotification !== 'undefined') {
                 showNotification('Produkts veiksmīgi pievienots!', 'success');
@@ -327,7 +248,7 @@ function handleAddProductSubmit(e) {
             }
             closeModal();
             document.getElementById('addProductForm').reset();
-            loadProducts(); // Reload the products table
+            loadProducts(); 
         } else if (data.validation_errors) {
             displayValidationErrors(data.validation_errors);
         } else {
@@ -347,15 +268,11 @@ function handleAddProductSubmit(e) {
         }
     })
     .finally(() => {
-        // Restore button state
         submitButton.textContent = originalText;
         submitButton.disabled = false;
     });
 }
-
-// Function to edit a product
 function editProduct(productId) {
-    // Fetch product data first
     fetch(`get_product.php?id=${productId}`)
         .then(response => response.json())
         .then(product => {
@@ -363,8 +280,6 @@ function editProduct(productId) {
                 showNotification('Kļūda ielādējot produkta datus: ' + product.error, 'error');
                 return;
             }
-            
-            // Create edit modal
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.display = 'block';
@@ -406,13 +321,9 @@ function editProduct(productId) {
                     </form>
                 </div>
             `;
-            
             document.body.appendChild(modal);
-            
-            // Add form submit handler
             document.getElementById('editProductForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 const formData = {
                     id: document.getElementById('editProductId').value,
                     product_code: document.getElementById('editProductCode').value,
@@ -423,21 +334,15 @@ function editProduct(productId) {
                     unit_price: document.getElementById('editUnitPrice').value,
                     min_stock_level: document.getElementById('editMinStock').value
                 };
-                
-                // Validate form data
                 const validationErrors = validateProductForm(formData);
-                
                 if (validationErrors.length > 0) {
                     displayValidationErrors(validationErrors);
                     return;
                 }
-
-                // Show loading state
                 const submitButton = document.querySelector('#editProductForm button[type="submit"]');
                 const originalText = submitButton.textContent;
                 submitButton.textContent = 'Saglabā...';
                 submitButton.disabled = true;
-                
                 fetch('edit_product.php', {
                     method: 'POST',
                     headers: {
@@ -450,7 +355,7 @@ function editProduct(productId) {
                     if (data.success) {
                         showNotification('Produkts veiksmīgi atjaunināts!', 'success');
                         modal.remove();
-                        loadProducts(); // Reload the products table
+                        loadProducts(); 
                     } else if (data.validation_errors) {
                         displayValidationErrors(data.validation_errors);
                     } else {
@@ -462,13 +367,10 @@ function editProduct(productId) {
                     showNotification('Kļūda saglabājot produktu', 'error');
                 })
                 .finally(() => {
-                    // Restore button state
                     submitButton.textContent = originalText;
                     submitButton.disabled = false;
                 });
             });
-            
-            // Close modal when clicking outside
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     modal.remove();
@@ -480,8 +382,6 @@ function editProduct(productId) {
             showNotification('Kļūda ielādējot produkta datus', 'error');
         });
 }
-
-// Function to delete a product
 function deleteProduct(productId) {
     if (confirm('Vai tiešām vēlaties dzēst šo produktu? Šī darbība ir neatgriezeniska.')) {
         fetch('delete_product.php', {
@@ -495,7 +395,7 @@ function deleteProduct(productId) {
         .then(data => {
             if (data.success) {
                 showNotification(data.message, 'success');
-                loadProducts(); // Reload the products table
+                loadProducts(); 
             } else {
                 showNotification('Kļūda: ' + (data.error || 'Nezināma kļūda'), 'error');
             }
@@ -506,8 +406,6 @@ function deleteProduct(productId) {
         });
     }
 }
-
-// Expose functions to the global scope
 window.loadProducts = loadProducts;
 window.validateProductCode = validateProductCode;
 window.validateProductName = validateProductName;
@@ -524,4 +422,4 @@ window.searchProducts = searchProducts;
 window.setupAddProductForm = setupAddProductForm;
 window.handleAddProductSubmit = handleAddProductSubmit;
 window.editProduct = editProduct;
-window.deleteProduct = deleteProduct; 
+window.deleteProduct = deleteProduct;
