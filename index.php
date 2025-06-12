@@ -1079,6 +1079,115 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
             console.log('Warehouse receive section not found'); // Debug log
         }
     });
+    
+    // Function to edit a product - moved here to ensure global scope
+    function editProduct(productId) {
+        console.log('editProduct called with ID:', productId);
+        
+        // Fetch product data first
+        fetch(`get_product.php?id=${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                if (product.error) {
+                    alert('Kļūda ielādējot produkta datus: ' + product.error);
+                    return;
+                }
+                
+                // Create edit modal
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'block';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                        <h2>Rediģēt produktu</h2>
+                        <form id="editProductForm">
+                            <input type="hidden" id="editProductId" value="${product.id}">
+                            <div class="form-group">
+                                <label for="editProductCode">Produkta kods:</label>
+                                <input type="text" id="editProductCode" value="${product.product_code || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editProductName">Nosaukums:</label>
+                                <input type="text" id="editProductName" value="${product.product_name || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCategory">Kategorija:</label>
+                                <input type="text" id="editCategory" value="${product.category || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editBarcode">Svītrkods:</label>
+                                <input type="text" id="editBarcode" value="${product.barcode || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="editDescription">Apraksts:</label>
+                                <textarea id="editDescription">${product.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editUnitPrice">Vienības cena (€):</label>
+                                <input type="number" id="editUnitPrice" step="0.01" value="${product.unit_price || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editMinStock">Min. krājums:</label>
+                                <input type="number" id="editMinStock" value="${product.min_stock_level || ''}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Saglabāt</button>
+                        </form>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Add form submit handler
+                document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = {
+                        id: document.getElementById('editProductId').value,
+                        product_code: document.getElementById('editProductCode').value,
+                        product_name: document.getElementById('editProductName').value,
+                        category: document.getElementById('editCategory').value,
+                        barcode: document.getElementById('editBarcode').value,
+                        description: document.getElementById('editDescription').value,
+                        unit_price: document.getElementById('editUnitPrice').value,
+                        min_stock_level: document.getElementById('editMinStock').value
+                    };
+                    
+                    fetch('edit_product.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Produkts veiksmīgi atjaunināts!');
+                            modal.remove();
+                            loadProducts(); // Reload the products table
+                        } else {
+                            alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Kļūda saglabājot produktu');
+                    });
+                });
+                
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching product:', error);
+                alert('Kļūda ielādējot produkta datus');
+            });
+    }
     </script>
 
     <style>
