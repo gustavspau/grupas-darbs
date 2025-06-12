@@ -104,8 +104,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const addProductForm = document.getElementById('addProductForm');
     addProductForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        // TODO: Implement form submission to add new product
-        closeModal();
+        
+        const formData = {
+            product_code: document.getElementById('productCode').value,
+            product_name: document.getElementById('productName').value,
+            category: document.getElementById('productCategory').value,
+            barcode: document.getElementById('barcode').value,
+            description: document.getElementById('description').value,
+            unit_price: document.getElementById('unitPrice').value,
+            min_stock_level: document.getElementById('minStock').value
+        };
+
+        fetch('add_product.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Produkts veiksmīgi pievienots!');
+                closeModal();
+                document.getElementById('addProductForm').reset();
+                loadProducts(); // Reload the products table
+            } else {
+                alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Kļūda pievienojot produktu');
+        });
     });
 
     // Close modal when clicking outside
@@ -227,7 +258,25 @@ function editProduct(productId) {
 // Function to delete a product
 function deleteProduct(productId) {
     if (confirm('Vai tiešām vēlaties dzēst šo produktu?')) {
-        // TODO: Implement delete functionality
-        console.log('Delete product:', productId);
+        fetch('delete_product.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                loadProducts(); // Reload the products table
+            } else {
+                alert('Kļūda: ' + (data.error || 'Nezināma kļūda'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Kļūda dzēšot produktu');
+        });
     }
 } 

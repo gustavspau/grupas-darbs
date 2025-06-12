@@ -16,7 +16,7 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noliktavas Vadības Sistēma</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=3.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="inventory.js"></script>
@@ -489,7 +489,33 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
 
             <div id="warehouse-inventory" class="content-section">
                 <h2>Inventāra uzskaite</h2>
-                <p>Šeit tiks attēlota inventāra uzskaites saskarnes...</p>
+                <div class="inventory-management">
+                    <div class="search-section">
+                        <div class="search-box">
+                            <input type="text" id="inventorySearch" placeholder="Meklēt produktu...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Produkta kods</th>
+                                    <th>Nosaukums</th>
+                                    <th>Kategorija</th>
+                                    <th>Krājums</th>
+                                    <th>Cena</th>
+                                    <th>Statuss</th>
+                                    <th>Darbības</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                <!-- Inventory items will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div id="warehouse-tasks" class="content-section">
@@ -520,24 +546,24 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
         <nav class="sidebar">
             <ul class="nav-menu">
                 <li><a href="#" onclick="showShelfSection('dashboard')" class="nav-link active">
-                    <i class="fas fa-chart-dashboard"></i>
-                    Pārskats
+                    <i class="fas fa-home"></i>
+                    Sākums
                 </a></li>
-                <li><a href="#" onclick="showShelfSection('organize')" class="nav-link">
-                    <i class="fas fa-sort"></i>
-                    Plauktu organizēšana
+                <li><a href="#" onclick="showShelfSection('inventory')" class="nav-link">
+                    <i class="fas fa-boxes"></i>
+                    Izvietot preces
                 </a></li>
-                <li><a href="#" onclick="showShelfSection('restock')" class="nav-link">
-                    <i class="fas fa-plus-square"></i>
-                    Papildināšana
+                <li><a href="#" onclick="showShelfSection('reports')" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    Sagatavot atskaites
                 </a></li>
-                <li><a href="#" onclick="showShelfSection('check')" class="nav-link">
-                    <i class="fas fa-clipboard-check"></i>
-                    Plauktu pārbaude
+                <li><a href="#" onclick="showShelfSection('data')" class="nav-link">
+                    <i class="fas fa-keyboard"></i>
+                    Datu ievade sistēmā
                 </a></li>
-                <li><a href="#" onclick="showShelfSection('maintenance')" class="nav-link">
-                    <i class="fas fa-tools"></i>
-                    Apkope
+                <li><a href="logout.php" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Iziet
                 </a></li>
             </ul>
         </nav>
@@ -628,29 +654,128 @@ $userName = $user['first_name'] . ' ' . $user['last_name'];
                 </div>
             </div>
 
-            <div id="shelf-organize" class="content-section">
-                <h2>Plauktu organizēšana</h2>
-                <p>Šeit tiks attēlota plauktu organizēšanas saskarnes...</p>
+            <div id="shelf-inventory" class="content-section">
+                <h2>Preču izvietošana</h2>
+                <div class="shelf-organize-simple">
+                    <div class="organize-instructions">
+                        <h3>Uzdevumi šodienai:</h3>
+                        <ul class="task-list-simple">
+                            <li><i class="fas fa-check-circle"></i> Sakārtot preces sekcijā A</li>
+                            <li><i class="fas fa-check-circle"></i> Pārvietot jaunās preces uz plauktiem</li>
+                            <li><i class="fas fa-circle"></i> Pārbaudīt plauktu marķējumu</li>
+                            <li><i class="fas fa-circle"></i> Sakārtot preces pēc kategorijām</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <h3>Ātras darbības:</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="alert('Produktu saraksts ielādēts')">
+                                <i class="fas fa-list"></i> Skatīt produktu sarakstu
+                            </button>
+                            <button class="btn btn-success" onclick="alert('Kārtošana uzsākta')">
+                                <i class="fas fa-sort"></i> Sākt kārtošanu
+                            </button>
+                            <button class="btn btn-info" onclick="alert('Plauktu karte atvērta')">
+                                <i class="fas fa-map"></i> Plauktu karte
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="shelf-restock" class="content-section">
-                <h2>Papildināšana</h2>
-                <p>Šeit tiks attēlota papildināšanas saskarnes...</p>
+            <div id="shelf-reports" class="content-section">
+                <h2>Atskaišu sagatavošana</h2>
+                <div class="reports-simple">
+                    <div class="report-options">
+                        <h3>Pieejamās atskaites:</h3>
+                        <div class="report-list">
+                            <div class="report-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <div class="report-info">
+                                    <h4>Plauktu stāvokļa atskaite</h4>
+                                    <p>Pārskats par visu plauktu stāvokli un nepieciešamajām darbībām</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="alert('Atskaite ģenerēta')">Ģenerēt</button>
+                            </div>
+                            <div class="report-item">
+                                <i class="fas fa-boxes"></i>
+                                <div class="report-info">
+                                    <h4>Preču izvietojuma atskaite</h4>
+                                    <p>Detalizēta informācija par preču izvietojumu plauktos</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="alert('Atskaite ģenerēta')">Ģenerēt</button>
+                            </div>
+                            <div class="report-item">
+                                <i class="fas fa-tasks"></i>
+                                <div class="report-info">
+                                    <h4>Dienas darbu atskaite</h4>
+                                    <p>Kopsavilkums par šodienas veiktajiem darbiem</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="alert('Atskaite ģenerēta')">Ģenerēt</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="shelf-check" class="content-section">
-                <h2>Plauktu pārbaude</h2>
-                <p>Šeit tiks attēlota plauktu pārbaudes saskarnes...</p>
+            <div id="shelf-data" class="content-section">
+                <h2>Datu ievade sistēmā</h2>
+                <div class="data-entry-simple">
+                    <div class="entry-form">
+                        <h3>Ievadīt informāciju par plauktu:</h3>
+                        <form class="simple-form">
+                            <div class="form-group">
+                                <label>Plaukta kods:</label>
+                                <select class="form-control">
+                                    <option value="">Izvēlieties plauktu</option>
+                                    <option value="A1">A1</option>
+                                    <option value="A2">A2</option>
+                                    <option value="A3">A3</option>
+                                    <option value="A4">A4</option>
+                                    <option value="B1">B1</option>
+                                    <option value="B2">B2</option>
+                                    <option value="B3">B3</option>
+                                    <option value="B4">B4</option>
+                                    <option value="C1">C1</option>
+                                    <option value="C2">C2</option>
+                                    <option value="C3">C3</option>
+                                    <option value="C4">C4</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Produktu skaits:</label>
+                                <input type="number" class="form-control" placeholder="Ievadiet produktu skaitu">
+                            </div>
+                            <div class="form-group">
+                                <label>Stāvoklis:</label>
+                                <select class="form-control">
+                                    <option value="normal">Normāls</option>
+                                    <option value="low">Zems krājums</option>
+                                    <option value="organize">Nepieciešama kārtošana</option>
+                                    <option value="maintenance">Nepieciešama apkope</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Komentārs:</label>
+                                <textarea class="form-control" rows="3" placeholder="Papildu informācija..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success" onclick="event.preventDefault(); alert('Dati saglabāti sistēmā!')">
+                                <i class="fas fa-save"></i> Saglabāt
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
-            <div id="shelf-maintenance" class="content-section">
-                <h2>Apkope</h2>
-                <p>Šeit tiks attēlota apkopes saskarnes...</p>
-            </div>
+
+
+
         </main>
     </div>
 
     <script src="script.js"></script>
+    <script src="shelf-organizer.js"></script>
     <script>
     function showAdminSection(section) {
         // Hide all sections

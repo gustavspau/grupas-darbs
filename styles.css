@@ -769,4 +769,788 @@ body {
 
 .btn-icon.delete:hover {
     color: #dc3545;
+}
+
+/* Shelf Organizer Specific Styles */
+
+/* Enhanced Organization Container */
+.organize-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.current-tasks {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.task-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.task-item.urgent {
+    border-left: 4px solid #ff4444;
+    background: #fff5f5;
+}
+
+.task-details {
+    flex: 1;
+}
+
+.task-details p {
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+}
+
+.location {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.organize-form {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Restock Container */
+.restock-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.restock-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card.urgent {
+    background: #fff5f5;
+    border-color: #ffcdd2;
+}
+
+.summary-card i {
+    font-size: 1.5rem;
+    color: #6c5ce7;
+}
+
+.summary-card.urgent i {
+    color: #ff4444;
+}
+
+.card-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.card-info p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.restock-list {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.low-stock {
+    color: #dc3545;
+    font-weight: 600;
+    background: #fff5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.critical {
+    background: #fff5f5;
+}
+
+/* Enhanced Check Container */
+.check-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.check-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.check-schedule {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.schedule-item {
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-item.pending {
+    border-left: 4px solid #ffa726;
+    background: #fffbf0;
+}
+
+.schedule-item.completed {
+    border-left: 4px solid #4caf50;
+    background: #f0f8f0;
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.schedule-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.time {
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.shelf-list {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.shelf-tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-text {
+    color: #4caf50;
+    font-weight: 500;
+}
+
+.recent-checks {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.checks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.check-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.check-info strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.check-time {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.check-status.ok {
+    color: #4caf50;
+    font-weight: 500;
+}
+
+.check-status.issue {
+    color: #ff9800;
+    font-weight: 500;
+}
+
+/* Enhanced Maintenance Container */
+.maintenance-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.maintenance-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.maintenance-tasks {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.task-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.task-title i {
+    color: #ff5722;
+}
+
+.priority {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.priority.high {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.priority.medium {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.priority.low {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+.task-details {
+    margin-bottom: 1rem;
+}
+
+.task-details p {
+    margin: 0 0 0.5rem 0;
+    color: #666;
+}
+
+.task-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #888;
+}
+
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.maintenance-history {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.history-info strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.history-date {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.history-status.success {
+    color: #4caf50;
+    font-weight: 500;
+}
+
+/* Enhanced Warehouse Grid */
+.warehouse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.section h4 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.shelves {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.shelf {
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shelf.normal {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    color: #2e7d32;
+}
+
+.shelf.low-stock {
+    background: linear-gradient(135deg, #fff3e0, #ffcc02);
+    color: #f57c00;
+    animation: pulse 2s infinite;
+}
+
+.shelf.needs-organize {
+    background: linear-gradient(135deg, #ffebee, #ff8a80);
+    color: #d32f2f;
+}
+
+.shelf.maintenance {
+    background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+    color: #7b1fa2;
+}
+
+.shelf:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.shelf.selected {
+    border: 2px solid #6c5ce7 !important;
+    box-shadow: 0 0 15px rgba(108, 92, 231, 0.4) !important;
+    transform: scale(1.08);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Enhanced Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+.color-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.color-box.normal {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+}
+
+.color-box.low-stock {
+    background: linear-gradient(135deg, #fff3e0, #ffcc02);
+}
+
+.color-box.needs-organize {
+    background: linear-gradient(135deg, #ffebee, #ff8a80);
+}
+
+.color-box.maintenance {
+    background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+}
+
+/* Enhanced Table Styling for Shelf Organizer */
+.restock-list .data-table,
+.check-container .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.restock-list .data-table th,
+.check-container .data-table th,
+.restock-list .data-table td,
+.check-container .data-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.restock-list .data-table th,
+.check-container .data-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.restock-list .data-table tbody tr:hover,
+.check-container .data-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.restock-list .data-table .critical {
+    background: #fff5f5;
+}
+
+.restock-list .data-table .critical:hover {
+    background: #ffebee;
+}
+
+/* Enhanced Button Styling in Tables */
+.data-table .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.data-table .btn-primary {
+    background: linear-gradient(135deg, #6c5ce7, #5a4fcf);
+    color: white;
+}
+
+.data-table .btn-primary:hover {
+    background: linear-gradient(135deg, #5a4fcf, #4834d4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+/* Responsive Design for Shelf Organizer */
+@media (max-width: 768px) {
+    .organize-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .task-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .task-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .restock-list .data-table,
+    .check-container .data-table {
+        font-size: 0.875rem;
+    }
+    
+    .restock-list .data-table th,
+    .check-container .data-table th,
+    .restock-list .data-table td,
+    .check-container .data-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+/* Simple Shelf Organizer Styles */
+.shelf-organize-simple {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.organize-instructions {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.task-list-simple {
+    list-style: none;
+    padding: 0;
+}
+
+.task-list-simple li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.task-list-simple li:last-child {
+    border-bottom: none;
+}
+
+.task-list-simple i {
+    margin-right: 10px;
+    color: #4CAF50;
+}
+
+.task-list-simple .fa-circle {
+    color: #ccc;
+}
+
+.quick-actions {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Reports Simple Styles */
+.reports-simple {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.report-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.report-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.report-item i {
+    font-size: 2em;
+    color: #2196F3;
+    min-width: 50px;
+}
+
+.report-info {
+    flex: 1;
+}
+
+.report-info h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.report-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Data Entry Simple Styles */
+.data-entry-simple {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.entry-form {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.simple-form .form-group {
+    margin-bottom: 20px;
+}
+
+.simple-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.simple-form .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.simple-form .form-control:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
 } 
