@@ -6,7 +6,7 @@ if (!isAdmin()) {
     echo json_encode(['error' => 'Nav atļauts pievienot lietotājus']);
     exit;
 }
-$data = json_decode(file_get_contents('php:
+$data = json_decode(file_get_contents('php://input'), true);
 function validateUserData($data, $pdo, $isEdit = false, $userId = null) {
     $errors = [];
     $required_field_mapping = [

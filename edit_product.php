@@ -1,12 +1,22 @@
 <?php
+
+
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php_errors.log');
+
 require_once 'auth.php';
 require_once 'config.php';
+
 if (!isAdmin()) {
     http_response_code(403);
     echo json_encode(['error' => 'Nav atļauts rediģēt produktus']);
     exit;
 }
-$data = json_decode(file_get_contents('php:
+
+$data = json_decode(file_get_contents('php://input'), true);
+
 function validateProductData($data, $pdo, $isEdit = false, $productId = null) {
     $errors = [];
     $required_fields = ['product_code', 'product_name', 'category', 'unit_price', 'min_stock_level'];
@@ -84,12 +94,15 @@ function validateProductData($data, $pdo, $isEdit = false, $productId = null) {
     }
     return $errors;
 }
+
 if (!isset($data['id']) || !is_numeric($data['id']) || $data['id'] <= 0) {
     http_response_code(400);
     echo json_encode(['error' => 'Nederīgs produkta ID']);
     exit;
 }
+
 $product_id = intval($data['id']);
+
 try {
     $stmt = $pdo->prepare("SELECT id FROM products WHERE id = ?");
     $stmt->execute([$product_id]);
@@ -104,6 +117,7 @@ try {
     echo json_encode(['error' => 'Sistēmas kļūda']);
     exit;
 }
+
 $validation_errors = validateProductData($data, $pdo, true, $product_id);
 if (!empty($validation_errors)) {
     http_response_code(400);
@@ -113,6 +127,7 @@ if (!empty($validation_errors)) {
     ]);
     exit;
 }
+
 try {
     $product_code = strtoupper(trim($data['product_code']));
     $product_name = trim($data['product_name']);

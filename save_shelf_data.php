@@ -1,12 +1,22 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/php_errors.log');
+
 require_once 'config.php';
+
 header('Content-Type: application/json');
-$input = json_decode(file_get_contents('php:
+
+$input = json_decode(file_get_contents('php://input'), true);
+
 $shelfCode = $input['shelf_code'] ?? '';
 $productQuantity = $input['product_quantity'] ?? '';
 $shelfStatus = $input['shelf_status'] ?? '';
 $shelfComment = $input['shelf_comment'] ?? '';
 $productCode = $input['product_code'] ?? '';
+
 $errors = [];
 if (empty($shelfCode)) {
     $errors['shelfCode'] = 'Lūdzu izvēlieties plauktu.';

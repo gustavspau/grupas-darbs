@@ -10,7 +10,7 @@ if (!isAdmin() && !hasRole('warehouse')) {
     echo json_encode(['error' => 'Nav atļauts pievienot produktus']);
     exit;
 }
-$input = file_get_contents('php:
+$input = file_get_contents('php://input');
 $data = json_decode($input, true);
 if (!$data || !is_array($data)) {
     http_response_code(400);
